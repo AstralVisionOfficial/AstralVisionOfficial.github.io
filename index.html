@@ -1,0 +1,813 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Astral Vision — Mission Hub</title>
+<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Syne:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#020810;--bg2:#060f1e;--bg3:#0a1628;--accent:#00d4ff;--accent2:#00ff9d;--accent3:#ff6b35;--accent4:#b06bff;--text:#e8f4f8;--text2:#7ba3b8;--border:rgba(0,212,255,0.15);--border2:rgba(0,212,255,0.3);--mono:'Share Tech Mono',monospace;--sans:'Syne',sans-serif;--glow:0 0 20px rgba(0,212,255,0.3);}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:100vh;overflow-x:hidden;}
+::-webkit-scrollbar{width:4px;}::-webkit-scrollbar-track{background:transparent;}::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px;}
+#starfield{position:fixed;top:0;left:0;width:100%;height:100%;z-index:0;pointer-events:none;}
+#loadScreen{position:fixed;inset:0;background:var(--bg);z-index:999;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:20px;transition:opacity 0.5s ease;}
+.load-title{font-family:var(--mono);font-size:1rem;color:var(--accent);letter-spacing:.3em;text-transform:uppercase;}
+.load-bar-track{width:200px;height:2px;background:var(--border);border-radius:1px;overflow:hidden;}
+.load-bar-fill{height:100%;background:var(--accent);border-radius:1px;animation:loadFill 1.8s ease forwards;box-shadow:0 0 10px var(--accent);}
+@keyframes loadFill{from{width:0}to{width:100%}}
+.load-status{font-family:var(--mono);font-size:.6rem;color:var(--text2);letter-spacing:.15em;}
+.app{position:relative;z-index:1;display:flex;flex-direction:column;min-height:100vh;}
+/* HEADER */
+header{display:flex;align-items:center;justify-content:space-between;padding:.75rem 2rem;border-bottom:1px solid var(--border);background:rgba(2,8,16,0.92);backdrop-filter:blur(12px);position:sticky;top:0;z-index:100;gap:16px;}
+.logo{display:flex;align-items:center;gap:10px;flex-shrink:0;}
+.logo-icon{width:32px;height:32px;border:1.5px solid var(--accent);border-radius:50%;display:flex;align-items:center;justify-content:center;box-shadow:var(--glow);animation:pulse 3s ease-in-out infinite;}
+@keyframes pulse{0%,100%{box-shadow:0 0 10px rgba(0,212,255,.3)}50%{box-shadow:0 0 25px rgba(0,212,255,.7),0 0 50px rgba(0,212,255,.3)}}
+.logo-icon svg{width:16px;height:16px;}
+.logo-text{font-size:1rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--accent);}
+.logo-sub{font-family:var(--mono);font-size:.58rem;color:var(--text2);letter-spacing:.12em;}
+.header-mid{display:flex;gap:4px;flex:1;justify-content:center;}
+.nav-btn{font-family:var(--mono);font-size:.65rem;letter-spacing:.08em;padding:5px 12px;border:1px solid transparent;border-radius:4px;background:transparent;color:var(--text2);cursor:pointer;transition:all .2s;text-transform:uppercase;white-space:nowrap;}
+.nav-btn:hover{color:var(--accent);border-color:var(--border2);}
+.nav-btn.active{color:var(--accent);border-color:var(--accent);background:rgba(0,212,255,.08);box-shadow:var(--glow);}
+.header-right{display:flex;align-items:center;gap:14px;flex-shrink:0;}
+.status-dot{display:flex;align-items:center;gap:5px;font-family:var(--mono);font-size:.65rem;color:var(--accent2);}
+.dot{width:6px;height:6px;border-radius:50%;background:var(--accent2);animation:blink 2s ease-in-out infinite;}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.2}}
+/* PAGES */
+.page{display:none;flex:1;}
+.page.active{display:block;}
+/* SHARED */
+.section-label{font-family:var(--mono);font-size:.62rem;letter-spacing:.2em;color:var(--text2);text-transform:uppercase;display:flex;align-items:center;gap:10px;margin-bottom:10px;}
+.section-label::after{content:'';flex:1;height:1px;background:var(--border);}
+.stat-row{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:1.25rem;}
+.stat-card{background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:1rem;position:relative;overflow:hidden;}
+.stat-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--accent),transparent);opacity:.5;}
+.stat-card.g::before{background:linear-gradient(90deg,transparent,var(--accent2),transparent);}
+.stat-card.o::before{background:linear-gradient(90deg,transparent,var(--accent3),transparent);}
+.stat-card.p::before{background:linear-gradient(90deg,transparent,var(--accent4),transparent);}
+.stat-label{font-family:var(--mono);font-size:.6rem;letter-spacing:.15em;color:var(--text2);text-transform:uppercase;margin-bottom:5px;}
+.stat-value{font-family:var(--mono);font-size:1.5rem;font-weight:700;color:var(--accent);line-height:1;margin-bottom:3px;}
+.stat-value.g{color:var(--accent2);}.stat-value.o{color:var(--accent3);}.stat-value.p{color:var(--accent4);}
+.stat-sub{font-family:var(--mono);font-size:.58rem;color:var(--text2);}
+.card-box{background:var(--bg2);border:1px solid var(--border);border-radius:8px;overflow:hidden;margin-bottom:1.25rem;}
+.card-box-header{padding:10px 14px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;}
+.card-box-title{font-family:var(--mono);font-size:.68rem;color:var(--accent);letter-spacing:.1em;}
+.live-badge{font-family:var(--mono);font-size:.55rem;padding:2px 8px;border:1px solid var(--accent2);border-radius:3px;color:var(--accent2);letter-spacing:.1em;}
+table{width:100%;border-collapse:collapse;}
+th{font-family:var(--mono);font-size:.56rem;color:var(--text2);letter-spacing:.1em;text-transform:uppercase;padding:7px 14px;text-align:left;border-bottom:1px solid var(--border);}
+td{font-family:var(--mono);font-size:.65rem;padding:8px 14px;border-bottom:1px solid rgba(0,212,255,.05);color:var(--text);}
+tr:last-child td{border-bottom:none;}tr:hover td{background:rgba(0,212,255,.04);}
+.risk-high{color:#ff4444;}.risk-med{color:var(--accent3);}.risk-low{color:var(--accent2);}
+.risk-bar{display:flex;align-items:center;gap:6px;}
+.risk-bar-track{width:44px;height:3px;background:rgba(255,255,255,.1);border-radius:2px;overflow:hidden;}
+.risk-bar-fill{height:100%;border-radius:2px;}
+.map-legend{display:flex;gap:12px;flex-wrap:wrap;}
+.legend-item{display:flex;align-items:center;gap:5px;font-family:var(--mono);font-size:.58rem;color:var(--text2);}
+.legend-dot{width:7px;height:7px;border-radius:50%;}
+.info-card{background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:1rem;margin-bottom:.75rem;}
+.info-card-title{font-family:var(--mono);font-size:.6rem;letter-spacing:.12em;color:var(--accent);text-transform:uppercase;margin-bottom:.5rem;}
+.info-card-body{font-size:.75rem;color:var(--text2);line-height:1.6;}
+.info-stat{display:flex;justify-content:space-between;align-items:center;padding:4px 0;border-bottom:1px solid var(--border);}
+.info-stat:last-child{border-bottom:none;}
+.info-stat-label{font-family:var(--mono);font-size:.58rem;color:var(--text2);}
+.info-stat-val{font-family:var(--mono);font-size:.68rem;color:var(--accent2);}
+/* HUB — fits in viewport, no scroll */
+#hubPage{height:calc(100vh - 57px);overflow:hidden;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:1.5rem 2rem;gap:1.1rem;}
+.hub-eyebrow{font-family:var(--mono);font-size:.6rem;letter-spacing:.25em;color:var(--text2);text-transform:uppercase;display:flex;align-items:center;justify-content:center;gap:12px;}
+.hub-eyebrow::before,.hub-eyebrow::after{content:'';width:30px;height:1px;background:var(--border2);}
+.hub-title{font-size:2.4rem;font-weight:800;letter-spacing:-.02em;color:var(--accent);line-height:1;text-shadow:0 0 50px rgba(0,212,255,.35);text-align:center;}
+.hub-sub{font-family:var(--mono);font-size:.65rem;color:var(--text2);letter-spacing:.1em;text-align:center;}
+.hub-desc{font-size:.8rem;color:var(--text2);max-width:520px;line-height:1.6;text-align:center;}
+.hub-cards{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;width:100%;max-width:1080px;}
+.hub-card{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:1.3rem 1.1rem;cursor:pointer;transition:all .3s cubic-bezier(.4,0,.2,1);position:relative;overflow:hidden;text-align:center;display:flex;flex-direction:column;align-items:center;gap:7px;}
+.hub-card::before{content:'';position:absolute;inset:0;opacity:0;transition:opacity .3s;border-radius:12px;}
+.hub-card.c1::before{background:radial-gradient(ellipse at top,rgba(0,212,255,.09),transparent 70%);}
+.hub-card.c2::before{background:radial-gradient(ellipse at top,rgba(0,255,157,.09),transparent 70%);}
+.hub-card.c3::before{background:radial-gradient(ellipse at top,rgba(255,107,53,.09),transparent 70%);}
+.hub-card.c4::before{background:radial-gradient(ellipse at top,rgba(176,107,255,.09),transparent 70%);}
+.hub-card:hover{transform:translateY(-4px);}
+.hub-card:hover::before{opacity:1;}
+.hub-card.c1:hover{border-color:rgba(0,212,255,.5);box-shadow:0 6px 30px rgba(0,212,255,.15);}
+.hub-card.c2:hover{border-color:rgba(0,255,157,.5);box-shadow:0 6px 30px rgba(0,255,157,.15);}
+.hub-card.c3:hover{border-color:rgba(255,107,53,.5);box-shadow:0 6px 30px rgba(255,107,53,.15);}
+.hub-card.c4:hover{border-color:rgba(176,107,255,.5);box-shadow:0 6px 30px rgba(176,107,255,.15);}
+.hub-card-num{font-family:var(--mono);font-size:.55rem;letter-spacing:.2em;color:var(--text2);}
+.hub-card-icon{font-family:var(--mono);font-size:1.3rem;letter-spacing:.05em;width:44px;height:44px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-weight:700;}
+.hub-card.c1 .hub-card-icon{color:var(--accent);background:rgba(0,212,255,.08);border:1px solid rgba(0,212,255,.2);}
+.hub-card.c2 .hub-card-icon{color:var(--accent2);background:rgba(0,255,157,.08);border:1px solid rgba(0,255,157,.2);}
+.hub-card.c3 .hub-card-icon{color:var(--accent3);background:rgba(255,107,53,.08);border:1px solid rgba(255,107,53,.2);}
+.hub-card.c4 .hub-card-icon{color:var(--accent4);background:rgba(176,107,255,.08);border:1px solid rgba(176,107,255,.2);}
+.hub-card-cat{font-family:var(--mono);font-size:.56rem;letter-spacing:.15em;text-transform:uppercase;}
+.hub-card.c1 .hub-card-cat{color:var(--accent);}.hub-card.c2 .hub-card-cat{color:var(--accent2);}.hub-card.c3 .hub-card-cat{color:var(--accent3);}.hub-card.c4 .hub-card-cat{color:var(--accent4);}
+.hub-card-title{font-size:.92rem;font-weight:700;color:var(--text);line-height:1.2;}
+.hub-card-desc{font-size:.69rem;color:var(--text2);line-height:1.55;}
+.hub-card-arrow{font-family:var(--mono);font-size:.58rem;opacity:0;transform:translateX(-5px);transition:all .2s;}
+.hub-card.c1 .hub-card-arrow{color:var(--accent);}.hub-card.c2 .hub-card-arrow{color:var(--accent2);}.hub-card.c3 .hub-card-arrow{color:var(--accent3);}.hub-card.c4 .hub-card-arrow{color:var(--accent4);}
+.hub-card:hover .hub-card-arrow{opacity:1;transform:translateX(0);}
+/* NEO */
+#neoPage .inner{display:grid;grid-template-columns:1fr 300px;height:calc(100vh - 57px);}
+.neo-left{padding:1.5rem;overflow-y:auto;border-right:1px solid var(--border);}
+#orbitCanvas{width:100%;height:280px;display:block;}
+/* CHAT — improved usability */
+#chatPage .inner{display:grid;grid-template-columns:240px 1fr;height:calc(100vh - 57px);}
+.chat-context{padding:1rem;overflow-y:auto;border-right:1px solid var(--border);background:var(--bg2);}
+.chatbot{display:flex;flex-direction:column;height:100%;background:var(--bg);}
+.chat-hdr{padding:.85rem 1.5rem;border-bottom:1px solid var(--border);background:var(--bg2);display:flex;align-items:center;justify-content:space-between;}
+.chat-hdr-title{font-family:var(--mono);font-size:.72rem;color:var(--accent);letter-spacing:.12em;text-transform:uppercase;}
+.chat-hdr-sub{font-family:var(--mono);font-size:.56rem;color:var(--text2);}
+.chat-goal-bar{padding:8px 1.5rem;border-bottom:1px solid var(--border);background:rgba(0,212,255,.03);display:flex;align-items:center;gap:10px;}
+.goal-label{font-family:var(--mono);font-size:.58rem;color:var(--text2);text-transform:uppercase;letter-spacing:.1em;white-space:nowrap;}
+.goal-select{font-family:var(--mono);font-size:.65rem;background:var(--bg3);border:1px solid var(--border2);border-radius:5px;color:var(--accent);padding:4px 10px;cursor:pointer;flex:1;outline:none;}
+.goal-select:focus{border-color:var(--accent);}
+.goal-select option{background:var(--bg3);color:var(--text);}
+.chat-messages{flex:1;overflow-y:auto;padding:1.5rem;display:flex;flex-direction:column;gap:14px;}
+.chat-messages::-webkit-scrollbar{width:3px;}
+.message{display:flex;flex-direction:column;gap:5px;animation:fadeUp .25s ease;}
+@keyframes fadeUp{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+.message.user{align-items:flex-end;}.message.ai{align-items:flex-start;}
+.msg-label{font-family:var(--mono);font-size:.5rem;letter-spacing:.14em;color:var(--text2);text-transform:uppercase;padding:0 4px;}
+.msg-bubble{max-width:85%;padding:11px 15px;border-radius:10px;font-size:.82rem;line-height:1.65;word-break:break-word;}
+.message.user .msg-bubble{background:rgba(0,212,255,.13);border:1px solid rgba(0,212,255,.28);color:var(--text);border-radius:10px 10px 2px 10px;}
+.message.ai .msg-bubble{background:var(--bg2);border:1px solid var(--border);color:var(--text);border-radius:10px 10px 10px 2px;}
+.msg-bubble .hl{color:var(--accent);font-weight:600;}
+.msg-bubble .hl2{color:var(--accent2);}.msg-bubble .hl3{color:var(--accent3);}
+.msg-bubble strong{color:var(--accent);}
+/* Suggestion chips */
+.suggestions{display:flex;flex-wrap:wrap;gap:6px;padding:.25rem 1.5rem .75rem;}
+.sug-btn{font-size:.72rem;padding:6px 12px;border:1px solid var(--border2);border-radius:20px;background:var(--bg2);color:var(--text2);cursor:pointer;transition:all .15s;text-align:left;line-height:1.3;}
+.sug-btn:hover{border-color:var(--accent);color:var(--accent);background:rgba(0,212,255,.07);}
+/* Input area */
+.chat-input-area{padding:.9rem 1.5rem;border-top:1px solid var(--border);background:var(--bg2);display:flex;flex-direction:column;gap:8px;}
+.chat-input-row{display:flex;gap:10px;align-items:flex-end;}
+.chat-input{flex:1;background:var(--bg3);border:1px solid var(--border);border-radius:10px;color:var(--text);font-family:var(--sans);font-size:.85rem;padding:10px 14px;resize:none;outline:none;transition:border-color .2s;line-height:1.5;min-height:42px;max-height:120px;overflow-y:auto;}
+.chat-input:focus{border-color:var(--accent);box-shadow:0 0 0 2px rgba(0,212,255,.08);}
+.chat-input::placeholder{color:var(--text2);}
+.send-btn{background:var(--accent);border:none;border-radius:10px;color:var(--bg);font-family:var(--mono);font-size:.68rem;font-weight:700;padding:10px 18px;cursor:pointer;transition:all .15s;white-space:nowrap;height:42px;display:flex;align-items:center;gap:5px;}
+.send-btn:hover{background:#1de8ff;box-shadow:0 0 16px rgba(0,212,255,.4);}
+.send-btn:disabled{opacity:.35;cursor:not-allowed;}
+.input-hint{font-family:var(--mono);font-size:.52rem;color:rgba(123,163,184,.4);text-align:right;}
+.disclaimer{font-family:var(--mono);font-size:.5rem;color:rgba(123,163,184,.35);text-align:center;padding:3px 1rem 5px;background:var(--bg2);}
+/* Typing */
+.typing-indicator{display:flex;align-items:center;gap:4px;padding:11px 15px;background:var(--bg2);border:1px solid var(--border);border-radius:10px 10px 10px 2px;width:fit-content;}
+.typing-dot{width:5px;height:5px;border-radius:50%;background:var(--accent);animation:typingBounce 1.2s ease-in-out infinite;}
+.typing-dot:nth-child(2){animation-delay:.2s;}.typing-dot:nth-child(3){animation-delay:.4s;}
+@keyframes typingBounce{0%,60%,100%{transform:translateY(0);opacity:.4}30%{transform:translateY(-5px);opacity:1}}
+/* BIZ */
+#bizPage{overflow-y:auto;min-height:calc(100vh - 57px);}
+.biz-hero{text-align:center;padding:2.5rem 2rem 2rem;border-bottom:1px solid var(--border);}
+.biz-hero-eyebrow{font-family:var(--mono);font-size:.6rem;letter-spacing:.2em;color:var(--accent3);text-transform:uppercase;margin-bottom:.75rem;}
+.biz-hero-title{font-size:2.2rem;font-weight:800;color:var(--text);margin-bottom:.5rem;}
+.biz-hero-title span{color:var(--accent3);}
+.biz-hero-desc{font-size:.88rem;color:var(--text2);max-width:560px;margin:0 auto;line-height:1.7;}
+.panel-wrap{padding:1.5rem 2rem;max-width:1300px;margin:0 auto;}
+.biz-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1.5rem;}
+.capability-card{background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:1.25rem;}
+.cap-title{font-size:.88rem;font-weight:600;color:var(--text);margin-bottom:.4rem;}
+.cap-body{font-size:.75rem;color:var(--text2);line-height:1.6;}
+.pricing-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:1.25rem;}
+.price-card{background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:1.5rem;display:flex;flex-direction:column;gap:10px;position:relative;}
+.price-card.featured{border-color:rgba(255,107,53,.5);box-shadow:0 0 30px rgba(255,107,53,.1);}
+.price-card.featured::before{content:'MOST POPULAR';position:absolute;top:-11px;left:50%;transform:translateX(-50%);font-family:var(--mono);font-size:.55rem;letter-spacing:.1em;padding:2px 10px;background:var(--accent3);color:var(--bg);border-radius:3px;}
+.price-tier{font-family:var(--mono);font-size:.62rem;letter-spacing:.15em;color:var(--accent3);text-transform:uppercase;}
+.price-name{font-size:1.15rem;font-weight:700;color:var(--text);}
+.price-amount{font-family:var(--mono);font-size:1.4rem;color:var(--accent3);}
+.price-period{font-family:var(--mono);font-size:.6rem;color:var(--text2);}
+.price-features{display:flex;flex-direction:column;gap:5px;flex:1;}
+.price-feat{font-family:var(--mono);font-size:.62rem;color:var(--text2);display:flex;align-items:center;gap:6px;}
+.price-feat::before{content:'✓';color:var(--accent2);}
+.price-btn{font-family:var(--mono);font-size:.65rem;padding:8px;border:1px solid var(--accent3);border-radius:5px;background:transparent;color:var(--accent3);cursor:pointer;transition:all .15s;letter-spacing:.08em;text-transform:uppercase;margin-top:auto;}
+.price-btn:hover{background:var(--accent3);color:var(--bg);}
+.mission-banner{background:linear-gradient(135deg,rgba(255,107,53,.08),rgba(0,212,255,.05));border:1px solid rgba(255,107,53,.2);border-radius:8px;padding:1.5rem;text-align:center;}
+.mission-banner-title{font-size:1rem;font-weight:700;color:var(--text);margin-bottom:.4rem;}
+.mission-banner-body{font-size:.78rem;color:var(--text2);line-height:1.6;}
+/* eVTOL */
+#evtolPage{min-height:calc(100vh - 57px);}
+#evtolPage .inner{display:grid;grid-template-columns:1fr 300px;height:calc(100vh - 57px);}
+.evtol-left{padding:1.5rem;overflow-y:auto;border-right:1px solid var(--border);}
+#evtolCanvas{width:100%;height:320px;display:block;}
+.craft-status{display:inline-flex;align-items:center;gap:4px;font-family:var(--mono);font-size:.6rem;padding:2px 7px;border-radius:3px;}
+.craft-status.cruise{background:rgba(176,107,255,.12);color:var(--accent4);}
+.craft-status.approach{background:rgba(0,255,157,.1);color:var(--accent2);}
+.craft-status.descent{background:rgba(255,107,53,.1);color:var(--accent3);}
+.craft-status.vertiport{background:rgba(123,163,184,.1);color:var(--text2);}
+/* ── TABLET (960px) ── */
+@media(max-width:960px){
+  .hub-cards{grid-template-columns:repeat(2,1fr);}
+  #neoPage .inner,#chatPage .inner,#evtolPage .inner{grid-template-columns:1fr;}
+  .neo-side,.chat-context,.evtol-side{display:none;}
+  .stat-row{grid-template-columns:repeat(2,1fr);}
+  .biz-grid,.pricing-grid{grid-template-columns:1fr;}
+  .hub-title{font-size:2rem;}
+  .header-mid{gap:2px;}.nav-btn{font-size:.58rem;padding:4px 8px;}
+  .header-right .status-dot:last-child{display:none;}
+}
+
+/* ── MOBILE (600px) ── */
+@media(max-width:600px){
+  header{padding:.6rem 1rem;flex-wrap:wrap;gap:8px;}
+  .logo-text{font-size:.85rem;}
+  .header-mid{order:3;width:100%;overflow-x:auto;justify-content:flex-start;padding-bottom:2px;scrollbar-width:none;}
+  .header-mid::-webkit-scrollbar{display:none;}
+  .nav-btn{font-size:.6rem;padding:4px 10px;white-space:nowrap;flex-shrink:0;}
+  .header-right{display:none;}
+  #hubPage{padding:1rem;gap:.75rem;height:auto;min-height:calc(100vh - 100px);overflow-y:auto;}
+  .hub-title{font-size:1.6rem;}
+  .hub-sub{font-size:.58rem;}
+  .hub-desc{display:none;}
+  .hub-cards{grid-template-columns:1fr 1fr;gap:10px;}
+  .hub-card{padding:1rem .9rem;gap:6px;}
+  .hub-card-icon{width:36px;height:36px;font-size:1rem;}
+  .hub-card-title{font-size:.82rem;}
+  .hub-card-desc{display:none;}
+  .hub-card-arrow{display:none;}
+  #neoPage .inner{grid-template-columns:1fr;height:auto;}
+  .neo-left{padding:1rem;overflow-y:visible;}
+  #orbitCanvas{height:220px;}
+  .stat-row{grid-template-columns:repeat(2,1fr);gap:7px;}
+  .stat-value{font-size:1.2rem;}
+  table th,table td{padding:6px 8px;font-size:.58rem;}
+  .card-box-header{flex-direction:column;align-items:flex-start;gap:6px;}
+  .map-legend{gap:8px;}
+  #chatPage .inner{grid-template-columns:1fr;height:calc(100vh - 100px);}
+  .chat-context{display:none;}
+  .chat-messages{padding:1rem;}
+  .msg-bubble{font-size:.78rem;max-width:95%;}
+  .chat-input-area{padding:.7rem 1rem;}
+  .chat-input{font-size:.8rem;}
+  .send-btn{padding:8px 12px;font-size:.62rem;}
+  .suggestions{padding:.25rem 1rem .5rem;}
+  .sug-btn{font-size:.67rem;}
+  .chat-goal-bar{padding:6px 1rem;}
+  #bizPage{overflow-y:auto;}
+  .biz-hero{padding:1.5rem 1rem;}
+  .biz-hero-title{font-size:1.6rem;}
+  .panel-wrap{padding:1rem;}
+  .pricing-grid{grid-template-columns:1fr;}
+  .biz-grid{grid-template-columns:1fr;}
+  #evtolPage .inner{grid-template-columns:1fr;height:auto;}
+  .evtol-left{padding:1rem;}
+  #evtolCanvas{height:240px;}
+  .load-title{font-size:.85rem;letter-spacing:.2em;}
+}
+
+/* ── VERY SMALL (380px) ── */
+@media(max-width:380px){
+  .hub-cards{grid-template-columns:1fr;}
+  .hub-card{flex-direction:row;text-align:left;gap:12px;padding:.9rem 1rem;}
+  .hub-card-icon{flex-shrink:0;}
+  .hub-card-cat{font-size:.52rem;}
+}
+</style>
+</head>
+<body>
+<canvas id="starfield"></canvas>
+
+<div id="loadScreen">
+  <div class="load-title">⬡ ASTRAL VISION</div>
+  <div class="load-bar-track"><div class="load-bar-fill"></div></div>
+  <div class="load-status" id="loadStatus">INITIALISING ORBITAL SENSORS...</div>
+</div>
+
+<div class="app">
+<header>
+  <div class="logo">
+    <div class="logo-icon">
+      <svg viewBox="0 0 24 24" fill="none" stroke="#00d4ff" stroke-width="1.5">
+        <circle cx="12" cy="12" r="4"/>
+        <ellipse cx="12" cy="12" rx="10" ry="4" transform="rotate(30 12 12)"/>
+        <ellipse cx="12" cy="12" rx="10" ry="4" transform="rotate(-30 12 12)"/>
+      </svg>
+    </div>
+    <div>
+      <div class="logo-text">Astral Vision</div>
+    </div>
+  </div>
+  <div class="header-mid">
+    <button class="nav-btn active" onclick="showPage('hub',this)">Hub</button>
+    <button class="nav-btn" onclick="showPage('neo',this)">NEO Tracker</button>
+    <button class="nav-btn" onclick="showPage('chat',this)">AI Console</button>
+    <button class="nav-btn" onclick="showPage('biz',this)">Business</button>
+    <button class="nav-btn" onclick="showPage('evtol',this)">eVTOL</button>
+  </div>
+  <div class="header-right">
+    <div class="status-dot"><span class="dot"></span> LIVE FEED</div>
+    <div class="status-dot" style="color:var(--text2)">UTC <span id="utcClock" style="color:var(--text)">--:--:--</span></div>
+  </div>
+</header>
+
+<!-- HUB -->
+<div class="page active" id="hubPage">
+  <div class="hub-eyebrow">MISSION CONTROL · SELECT MODULE</div>
+  <div class="hub-title">Astral Vision</div>
+  <div class="hub-sub">INTEGRATED SPACE & AERIAL INTELLIGENCE PLATFORM</div>
+  <div class="hub-desc">Unifying near-Earth object surveillance, AI space intelligence, commercial data services, and domestic aerial transport tracking.</div>
+  <div class="hub-cards">
+    <div class="hub-card c1" onclick="showPage('neo',document.querySelectorAll('.nav-btn')[1])">
+      <div class="hub-card-icon">01</div>
+      <div class="hub-card-cat">ORBITAL SURVEILLANCE</div>
+      <div class="hub-card-title">NEO Tracker</div>
+      <div class="hub-card-desc">Real-time mapping of 34,000+ catalogued objects across LEO, MEO and GEO shells. Live close-approach alerts from NASA JPL.</div>
+      <div class="hub-card-arrow">ENTER MODULE →</div>
+    </div>
+    <div class="hub-card c2" onclick="showPage('chat',document.querySelectorAll('.nav-btn')[2])">
+      <div class="hub-card-icon">02</div>
+      <div class="hub-card-cat">SPACE INTELLIGENCE</div>
+      <div class="hub-card-title">AI Console</div>
+      <div class="hub-card-desc">Interactive AI assistant trained on space data. Ask about debris, asteroids, missions and orbital mechanics — tailored to your role.</div>
+      <div class="hub-card-arrow">ENTER MODULE →</div>
+    </div>
+    <div class="hub-card c3" onclick="showPage('biz',document.querySelectorAll('.nav-btn')[3])">
+      <div class="hub-card-icon">03</div>
+      <div class="hub-card-cat">COMMERCIAL DATA SERVICE</div>
+      <div class="hub-card-title">Business Intelligence</div>
+      <div class="hub-card-desc">Subscription model for satellite operators. Predictive collision alerts, orbit-decay warnings, and anomaly detection — funding the mission.</div>
+      <div class="hub-card-arrow">ENTER MODULE →</div>
+    </div>
+    <div class="hub-card c4" onclick="showPage('evtol',document.querySelectorAll('.nav-btn')[4])">
+      <div class="hub-card-icon">04</div>
+      <div class="hub-card-cat">DOMESTIC AERIAL TRANSPORT</div>
+      <div class="hub-card-title">eVTOL Pathways</div>
+      <div class="hub-card-desc">Real-time 3D mapping and tracking of electric vertical take-off & landing aircraft across domestic Australian routes.</div>
+      <div class="hub-card-arrow">ENTER MODULE →</div>
+    </div>
+  </div>
+</div>
+
+<!-- NEO TRACKER -->
+<div class="page" id="neoPage">
+  <div class="inner">
+    <div class="neo-left">
+      <div class="stat-row">
+        <div class="stat-card"><div class="stat-label">Objects Tracked</div><div class="stat-value" id="statTracked">—</div><div class="stat-sub">catalogued objects</div></div>
+        <div class="stat-card o"><div class="stat-label">Close Approaches</div><div class="stat-value o" id="statApproach">—</div><div class="stat-sub">next 7 days</div></div>
+        <div class="stat-card"><div class="stat-label">Debris Fragments</div><div class="stat-value">27,000+</div><div class="stat-sub">≥10cm tracked</div></div>
+        <div class="stat-card g"><div class="stat-label">Hazardous NEOs</div><div class="stat-value g" id="statHazard">—</div><div class="stat-sub">potentially hazardous</div></div>
+      </div>
+      <div class="section-label">ORBITAL DENSITY MAP — REAL-TIME SIMULATION</div>
+      <div class="card-box">
+        <div class="card-box-header">
+          <div class="card-box-title">NEO TRACKER — LEO / MEO / GEO SHELLS</div>
+          <div class="map-legend">
+            <div class="legend-item"><div class="legend-dot" style="background:#00d4ff"></div>Satellite</div>
+            <div class="legend-item"><div class="legend-dot" style="background:#ff6b35"></div>Debris</div>
+            <div class="legend-item"><div class="legend-dot" style="background:#00ff9d"></div>NEO</div>
+            <div class="legend-item"><div class="legend-dot" style="background:#ffd700"></div>High Risk</div>
+          </div>
+        </div>
+        <canvas id="orbitCanvas"></canvas>
+      </div>
+      <div class="section-label">CLOSE-APPROACH ALERTS — NASA JPL</div>
+      <div class="card-box">
+        <div class="card-box-header">
+          <div class="card-box-title">NEAR-EARTH OBJECT CLOSE APPROACHES (NEXT 7 DAYS)</div>
+          <div class="live-badge">▶ LIVE</div>
+        </div>
+        <table>
+          <thead><tr><th>Designation</th><th>Approach Date</th><th>Distance (LD)</th><th>Velocity (km/s)</th><th>Size Est.</th><th>Risk</th></tr></thead>
+          <tbody id="neoTableBody"><tr><td colspan="6" style="text-align:center;color:var(--text2);padding:18px;">Loading NASA JPL data...</td></tr></tbody>
+        </table>
+      </div>
+    </div>
+    <div class="neo-side" style="display:flex;flex-direction:column;padding:1.25rem;gap:.75rem;overflow-y:auto;">
+      <div class="section-label" style="margin-bottom:0">LIVE DATA FEED</div>
+      <div class="info-card">
+        <div class="info-card-title">Orbital Shell Status</div>
+        <div class="info-stat"><span class="info-stat-label">LEO (200–2000km)</span><span class="info-stat-val" style="color:var(--accent3)">CONGESTED</span></div>
+        <div class="info-stat"><span class="info-stat-label">MEO (2000–35786km)</span><span class="info-stat-val">NOMINAL</span></div>
+        <div class="info-stat"><span class="info-stat-label">GEO (35786km)</span><span class="info-stat-val">MONITORED</span></div>
+        <div class="info-stat"><span class="info-stat-label">HEO (elliptical)</span><span class="info-stat-val">NOMINAL</span></div>
+      </div>
+      <div class="info-card">
+        <div class="info-card-title">Scanner Array</div>
+        <div class="info-stat"><span class="info-stat-label">Light Scanner A</span><span class="info-stat-val">ONLINE</span></div>
+        <div class="info-stat"><span class="info-stat-label">Light Scanner B</span><span class="info-stat-val">ONLINE</span></div>
+        <div class="info-stat"><span class="info-stat-label">AI Prediction Engine</span><span class="info-stat-val">ACTIVE</span></div>
+        <div class="info-stat"><span class="info-stat-label">NASA JPL Feed</span><span class="info-stat-val" id="nasaFeedStatus" style="color:var(--accent3)">CONNECTING...</span></div>
+      </div>
+      <div class="info-card">
+        <div class="info-card-title">5-Year Collision Model</div>
+        <div class="info-stat"><span class="info-stat-label">Predicted conjunctions</span><span class="info-stat-val">~1,800</span></div>
+        <div class="info-stat"><span class="info-stat-label">High-risk events</span><span class="info-stat-val" style="color:var(--accent3)">~42</span></div>
+        <div class="info-stat"><span class="info-stat-label">Model confidence</span><span class="info-stat-val">94.3%</span></div>
+      </div>
+      <div class="info-card">
+        <div class="info-card-title">Data Sources</div>
+        <div class="info-card-body" style="font-size:.7rem;display:flex;flex-direction:column;gap:3px;">
+          <span>NASA JPL NeoWs API</span><span>CelesTrak TLE Feed</span><span>ESA DISCOS Database</span><span>CSIRO Space</span><span>ICRAR Perth</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- AI CONSOLE -->
+<div class="page" id="chatPage">
+  <div class="inner">
+    <div class="chat-context">
+      <div class="section-label" style="margin-bottom:.75rem">CONTEXT</div>
+      <div class="info-card">
+        <div class="info-card-title">Live NASA Data</div>
+        <div class="info-stat"><span class="info-stat-label">NEOs (7 day)</span><span class="info-stat-val" id="chatNEOCount">—</span></div>
+        <div class="info-stat"><span class="info-stat-label">Hazardous</span><span class="info-stat-val" id="chatHazardCount">—</span></div>
+        <div class="info-stat"><span class="info-stat-label">Closest approach</span><span class="info-stat-val" id="chatClosest">—</span></div>
+      </div>
+      <div class="info-card">
+        <div class="info-card-title">Knowledge Sources</div>
+        <div class="info-card-body" style="font-size:.7rem;display:flex;flex-direction:column;gap:4px;">
+          <span>🇦🇺 Australian Space Agency</span>
+          <span>🔭 ICRAR · Perth WA</span>
+          <span>🛰 SmartSat CRC</span>
+          <span>🌿 CSIRO Space & Astronomy</span>
+          <span>🚀 NASA JPL / ODPO</span>
+          <span>🌍 ESA Space Debris Office</span>
+        </div>
+      </div>
+      <div class="info-card">
+        <div class="info-card-title">Key Facts</div>
+        <div class="info-stat"><span class="info-stat-label">Tracked debris ≥10cm</span><span class="info-stat-val">27,000+</span></div>
+        <div class="info-stat"><span class="info-stat-label">Annual damage cost</span><span class="info-stat-val" style="color:var(--accent3)">$100M+</span></div>
+        <div class="info-stat"><span class="info-stat-label">Shells covered</span><span class="info-stat-val">LEO/MEO/GEO</span></div>
+      </div>
+      <div class="info-card">
+        <div class="info-card-title">About Astral Vision AI</div>
+        <div class="info-card-body">Light scanners measure speed, angle, albedo. AI maps data in real-time and predicts conjunction events accounting for Earth's gravitational pull. Also tracks domestic eVTOL corridors.</div>
+      </div>
+    </div>
+    <div class="chatbot">
+      <div class="chat-hdr">
+        <div>
+          <div class="chat-hdr-title">⬡ AI Space Intelligence Console</div>
+          <div class="chat-hdr-sub">Powered by Astral Vision AI · NASA JPL / ESA / ICRAR / CSIRO</div>
+        </div>
+      </div>
+      <div class="chat-goal-bar">
+        <div class="goal-label">Career goal:</div>
+        <select class="goal-select" id="careerGoal" onchange="updateGoal()">
+          <option>Space Communications Expert</option>
+          <option>Astronaut</option>
+          <option>Astrophysicist</option>
+          <option>Satellite Engineer</option>
+          <option>Mission Planner</option>
+          <option>Student Explorer</option>
+          <option>eVTOL Pilot</option>
+        </select>
+      </div>
+      <div class="chat-messages" id="chatMessages"></div>
+      <div class="suggestions" id="suggestionArea"></div>
+      <div class="chat-input-area">
+        <div class="chat-input-row">
+          <textarea class="chat-input" id="chatInput" placeholder="Ask anything about space debris, asteroids, orbital safety, or eVTOL tracking..."
+            onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendMessage();}"
+            oninput="autoResize(this)"></textarea>
+          <button class="send-btn" id="sendBtn" onclick="sendMessage()">Send ↗</button>
+        </div>
+        <div class="input-hint">Press Enter to send · Shift+Enter for new line</div>
+      </div>
+      <div class="disclaimer">Educational prototype · Data: NASA JPL, ESA, ICRAR & CSIRO</div>
+    </div>
+  </div>
+</div>
+
+<!-- BUSINESS -->
+<div class="page" id="bizPage">
+  <div class="biz-hero">
+    <div class="biz-hero-eyebrow">MODULE 03 · COMMERCIAL DATA SERVICE</div>
+    <div class="biz-hero-title">Protect Your <span>Orbit</span></div>
+    <div class="biz-hero-desc">Damage from space debris costs the satellite industry over <strong style="color:var(--accent3)">$100 million</strong> every year. Astral Vision's predictive intelligence platform lets satellite operators see what's coming — before it happens. Subscription revenue funds the open educational mission.</div>
+  </div>
+  <div class="panel-wrap">
+    <div class="stat-row" style="margin-top:1.5rem;">
+      <div class="stat-card o"><div class="stat-label">Annual Losses</div><div class="stat-value o">$100M+</div><div class="stat-sub">from debris globally</div></div>
+      <div class="stat-card"><div class="stat-label">Tracked Debris</div><div class="stat-value">27,000+</div><div class="stat-sub">≥10cm in orbit</div></div>
+      <div class="stat-card g"><div class="stat-label">Alert Latency</div><div class="stat-value g">&lt;60s</div><div class="stat-sub">collision warnings</div></div>
+      <div class="stat-card"><div class="stat-label">Detection Accuracy</div><div class="stat-value">99.97%</div><div class="stat-sub">validated vs JSpOC</div></div>
+    </div>
+    <div class="section-label">CORE CAPABILITIES</div>
+    <div class="biz-grid">
+      <div class="capability-card"><div class="cap-title">🎯 Predictive Collision Mapping</div><div class="cap-body">AI-driven orbit propagation with Monte Carlo conjunction analysis 7 days ahead.</div></div>
+      <div class="capability-card"><div class="cap-title">📍 Off-Course Detection</div><div class="cap-body">Continuous TLE diff monitoring flags satellites drifting from planned trajectories.</div></div>
+      <div class="capability-card"><div class="cap-title">📉 Orbit Decay Alerts</div><div class="cap-body">Atmospheric drag modelling estimates re-entry windows weeks in advance.</div></div>
+      <div class="capability-card"><div class="cap-title">🧠 Anomaly Intelligence</div><div class="cap-body">Machine learning detects abnormal behaviour from any NEO interaction event.</div></div>
+    </div>
+    <div class="section-label">SUBSCRIPTION TIERS</div>
+    <div class="pricing-grid">
+      <div class="price-card">
+        <div class="price-tier">Observer</div>
+        <div class="price-name">Starter</div>
+        <div><span class="price-amount">$2,400</span><span class="price-period"> / month</span></div>
+        <div class="price-features">
+          <div class="price-feat">Up to 5 satellite assets</div>
+          <div class="price-feat">Daily orbital ephemerides</div>
+          <div class="price-feat">Weekly conjunction digest</div>
+          <div class="price-feat">Email alerts</div>
+        </div>
+        <button class="price-btn">Request Access</button>
+      </div>
+      <div class="price-card featured">
+        <div class="price-tier">Operator</div>
+        <div class="price-name">Professional</div>
+        <div><span class="price-amount">$9,800</span><span class="price-period"> / month</span></div>
+        <div class="price-features">
+          <div class="price-feat">Up to 50 assets</div>
+          <div class="price-feat">Real-time conjunction alerts</div>
+          <div class="price-feat">Orbit decay & anomaly detection</div>
+          <div class="price-feat">API access (10k req/day)</div>
+          <div class="price-feat">Priority support</div>
+        </div>
+        <button class="price-btn">Request Access</button>
+      </div>
+      <div class="price-card">
+        <div class="price-tier">Enterprise</div>
+        <div class="price-name">Mission Critical</div>
+        <div><span class="price-amount">Custom</span><span class="price-period"> / annual</span></div>
+        <div class="price-features">
+          <div class="price-feat">Unlimited assets</div>
+          <div class="price-feat">Sub-second alert latency</div>
+          <div class="price-feat">Custom manoeuvre recommendations</div>
+          <div class="price-feat">Dedicated mission analyst</div>
+          <div class="price-feat">On-premise deployment · SLA 99.99%</div>
+        </div>
+        <button class="price-btn">Request Access</button>
+      </div>
+    </div>
+    <div class="mission-banner">
+      <div class="mission-banner-title">💫 Funding the Mission</div>
+      <div class="mission-banner-body">Every commercial subscription directly subsidises free educational access to Astral Vision for schools, universities, and aspiring space professionals worldwide. Business value protects satellites — and powers the next generation of space explorers.</div>
+    </div>
+  </div>
+</div>
+
+<!-- eVTOL -->
+<div class="page" id="evtolPage">
+  <div class="inner">
+    <div class="evtol-left">
+      <div class="stat-row">
+        <div class="stat-card p"><div class="stat-label">Active Aircraft</div><div class="stat-value p">6</div><div class="stat-sub">in airspace</div></div>
+        <div class="stat-card g"><div class="stat-label">Vertiports Online</div><div class="stat-value g">42</div><div class="stat-sub">across AU</div></div>
+        <div class="stat-card"><div class="stat-label">Daily Flights</div><div class="stat-value">1,287</div><div class="stat-sub">last 24h</div></div>
+        <div class="stat-card o"><div class="stat-label">Avg. Altitude</div><div class="stat-value o">980m</div><div class="stat-sub">cruise band</div></div>
+      </div>
+      <div class="section-label">3D AIRSPACE MAP — LIVE PATHWAY VISUALISATION</div>
+      <div class="card-box">
+        <div class="card-box-header">
+          <div class="card-box-title">DOMESTIC eVTOL CORRIDORS · 3D PROJECTION</div>
+          <div class="map-legend">
+            <div class="legend-item"><div class="legend-dot" style="background:#b06bff"></div>Active Craft</div>
+            <div class="legend-item"><div class="legend-dot" style="background:rgba(176,107,255,0.3)"></div>Flight Trail</div>
+          </div>
+        </div>
+        <canvas id="evtolCanvas"></canvas>
+      </div>
+      <div class="section-label">LIVE FLEET TELEMETRY</div>
+      <div class="card-box">
+        <div class="card-box-header">
+          <div class="card-box-title">ACTIVE FLIGHT REGISTER</div>
+          <div class="live-badge">▶ TRACKING</div>
+        </div>
+        <table>
+          <thead><tr><th>Craft ID</th><th>Route</th><th>Altitude</th><th>Speed</th><th>ETA</th><th>Status</th></tr></thead>
+          <tbody id="evtolTable"></tbody>
+        </table>
+      </div>
+    </div>
+    <div class="evtol-side" style="display:flex;flex-direction:column;padding:1.25rem;gap:.75rem;overflow-y:auto;">
+      <div class="section-label" style="margin-bottom:0">AIRSPACE INTEL</div>
+      <div class="info-card">
+        <div class="info-card-title">Corridor Status</div>
+        <div class="info-stat"><span class="info-stat-label">Sydney Metro</span><span class="info-stat-val">CLEAR</span></div>
+        <div class="info-stat"><span class="info-stat-label">Melbourne Metro</span><span class="info-stat-val">CLEAR</span></div>
+        <div class="info-stat"><span class="info-stat-label">Brisbane–Gold Coast</span><span class="info-stat-val">CLEAR</span></div>
+        <div class="info-stat"><span class="info-stat-label">Perth Metro</span><span class="info-stat-val" style="color:var(--accent3)">WIND ADVISORY</span></div>
+      </div>
+      <div class="info-card">
+        <div class="info-card-title">Airspace Layers</div>
+        <div class="info-stat"><span class="info-stat-label">Ground–120m</span><span class="info-stat-val" style="color:var(--text2)">UNCONTROLLED</span></div>
+        <div class="info-stat"><span class="info-stat-label">120m–300m</span><span class="info-stat-val">eVTOL LOWER</span></div>
+        <div class="info-stat"><span class="info-stat-label">300m–1200m</span><span class="info-stat-val" style="color:var(--accent4)">eVTOL CRUISE</span></div>
+        <div class="info-stat"><span class="info-stat-label">1200m+</span><span class="info-stat-val" style="color:var(--text2)">GA / CONTROLLED</span></div>
+      </div>
+      <div class="info-card">
+        <div class="info-card-title">Technology</div>
+        <div class="info-card-body">Same AI framework as orbital tracking — extended to low-altitude domestic corridors. ADS-B data + 3D corridor mapping + AI collision avoidance.</div>
+      </div>
+      <div class="info-card">
+        <div class="info-card-title">Data Sources</div>
+        <div class="info-card-body" style="font-size:.7rem;">OpenSky Network ADS-B · CASA Airspace · Airservices Australia · Simulated eVTOL telemetry (prototype)</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</div><!-- end .app -->
+<script>
+// STARFIELD
+const sfC=document.getElementById('starfield'),sfX=sfC.getContext('2d');let stars=[];
+function initStars(){sfC.width=window.innerWidth;sfC.height=window.innerHeight;stars=Array.from({length:220},()=>({x:Math.random()*sfC.width,y:Math.random()*sfC.height,r:Math.random()*1.2,o:Math.random()*.7+.1,s:Math.random()*.3+.05}));}
+function drawStars(){sfX.clearRect(0,0,sfC.width,sfC.height);stars.forEach(s=>{s.o+=Math.sin(Date.now()*s.s*.001)*.005;sfX.beginPath();sfX.arc(s.x,s.y,s.r,0,Math.PI*2);sfX.fillStyle=`rgba(200,230,255,${Math.max(.05,Math.min(.8,s.o))})`;sfX.fill();});requestAnimationFrame(drawStars);}
+window.addEventListener('resize',initStars);initStars();drawStars();
+
+// CLOCK
+function updateClock(){
+  const now=new Date();
+  const h=String(now.getUTCHours()).padStart(2,'0');
+  const m=String(now.getUTCMinutes()).padStart(2,'0');
+  const s=String(now.getUTCSeconds()).padStart(2,'0');
+  document.getElementById('utcClock').textContent=h+':'+m+':'+s;
+}
+setInterval(updateClock,1000);updateClock();
+
+// PAGE NAV
+function showPage(id,btn){
+  document.querySelectorAll('.page').forEach(p=>{p.style.display='none';p.classList.remove('active');});
+  document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
+  const pg=document.getElementById(id+'Page');
+  pg.style.display='block';pg.classList.add('active');
+  if(btn)btn.classList.add('active');
+  if(id==='neo'&&!window.orbitInited){window.orbitInited=true;initOrbitMap();}
+  if(id==='evtol'&&!window.evtolInited){window.evtolInited=true;initEvtolMap();}
+  if(id==='chat'&&!window.chatInited){window.chatInited=true;initChat();}
+}
+
+// ORBIT MAP
+const orbitCanvas=document.getElementById('orbitCanvas'),octx=orbitCanvas.getContext('2d');
+let orbitObjs=[],orbitAnim;
+function initOrbitMap(){
+  orbitCanvas.width=orbitCanvas.offsetWidth;orbitCanvas.height=280;orbitObjs=[];
+  const cx=orbitCanvas.width/2,cy=orbitCanvas.height/2,maxR=Math.min(cx,cy)-18;
+  orbitObjs.push({type:'earth',cx,cy,r:20});
+  [.28,.48,.70,.90].forEach((ratio,i)=>{
+    const oR=maxR*ratio,count=[14,22,8,5][i],types=['debris','satellite','satellite','neo'][i];
+    for(let j=0;j<count;j++){
+      const angle=(j/count)*Math.PI*2+Math.random()*.3,speed=(.0007+Math.random()*.0005)*(i%2===0?1:-1);
+      orbitObjs.push({type:Math.random()<.07?'highrisk':types,angle,speed,orbitR:oR,cx,cy,size:types==='debris'?1.5:types==='neo'?3:2.5,trail:[]});
+    }
+  });
+  cancelAnimationFrame(orbitAnim);drawOrbit();
+}
+function drawOrbit(){
+  const w=orbitCanvas.width,h=orbitCanvas.height;octx.clearRect(0,0,w,h);
+  [.28,.48,.70,.90].forEach(r=>{const cx=w/2,cy=h/2,or=Math.min(cx,cy-18)*r;octx.beginPath();octx.arc(cx,cy,or,0,Math.PI*2);octx.strokeStyle='rgba(0,212,255,0.07)';octx.lineWidth=.5;octx.setLineDash([4,8]);octx.stroke();octx.setLineDash([]);});
+  orbitObjs.forEach(obj=>{
+    if(obj.type==='earth'){
+      const g=octx.createRadialGradient(obj.cx,obj.cy,0,obj.cx,obj.cy,38);g.addColorStop(0,'rgba(0,80,220,0.18)');g.addColorStop(1,'transparent');
+      octx.fillStyle=g;octx.beginPath();octx.arc(obj.cx,obj.cy,38,0,Math.PI*2);octx.fill();
+      octx.beginPath();octx.arc(obj.cx,obj.cy,obj.r,0,Math.PI*2);octx.fillStyle='#0a3d8f';octx.fill();octx.strokeStyle='#1a6fd4';octx.lineWidth=1.5;octx.stroke();return;
+    }
+    obj.angle+=obj.speed;
+    const x=obj.cx+Math.cos(obj.angle)*obj.orbitR,y=obj.cy+Math.sin(obj.angle)*obj.orbitR;
+    obj.trail.push({x,y});if(obj.trail.length>14)obj.trail.shift();
+    if(obj.trail.length>1){for(let i=1;i<obj.trail.length;i++){const a=(i/obj.trail.length)*.3;octx.beginPath();octx.moveTo(obj.trail[i-1].x,obj.trail[i-1].y);octx.lineTo(obj.trail[i].x,obj.trail[i].y);octx.strokeStyle=obj.type==='debris'?`rgba(255,107,53,${a})`:obj.type==='neo'?`rgba(0,255,157,${a})`:obj.type==='highrisk'?`rgba(255,215,0,${a})`:`rgba(0,212,255,${a})`;octx.lineWidth=.8;octx.stroke();}}
+    octx.beginPath();octx.arc(x,y,obj.size,0,Math.PI*2);octx.fillStyle=obj.type==='debris'?'#ff6b35':obj.type==='neo'?'#00ff9d':obj.type==='highrisk'?'#ffd700':'#00d4ff';octx.fill();
+    if(obj.type==='highrisk'){octx.beginPath();octx.arc(x,y,obj.size+3,0,Math.PI*2);octx.strokeStyle='rgba(255,215,0,0.4)';octx.lineWidth=.8;octx.stroke();}
+  });
+  orbitAnim=requestAnimationFrame(drawOrbit);
+}
+
+// eVTOL MAP
+const FLIGHTS=[
+  {id:'AV-077',route:'Sydney → Newcastle',  alt:1240,speed:248,eta:'00:18',status:'cruise',   px:.15,py:.35},
+  {id:'AV-104',route:'Melbourne → Geelong', alt:920, speed:212,eta:'00:11',status:'approach', px:.22,py:.74},
+  {id:'AV-152',route:'Brisbane → Gold Coast',alt:1560,speed:265,eta:'00:24',status:'cruise',  px:.32,py:.14},
+  {id:'AV-019',route:'Perth → Mandurah',    alt:0,   speed:0,  eta:'—',   status:'vertiport', px:.07,py:.54},
+  {id:'AV-208',route:'Adelaide → Glenelg', alt:640, speed:184,eta:'00:06',status:'descent',   px:.53,py:.64},
+  {id:'AV-301',route:'Canberra → Queanbeyan',alt:880,speed:198,eta:'00:09',status:'cruise',   px:.43,py:.50},
+];
+const evtolCanvas=document.getElementById('evtolCanvas'),ectx=evtolCanvas.getContext('2d');
+let evtolAngles=FLIGHTS.map(()=>Math.random()*Math.PI*2),evtolAnim2;
+function initEvtolMap(){evtolCanvas.width=evtolCanvas.offsetWidth;evtolCanvas.height=320;drawEvtol();}
+function drawEvtol(){
+  const w=evtolCanvas.width,h=evtolCanvas.height;ectx.clearRect(0,0,w,h);
+  ectx.strokeStyle='rgba(176,107,255,0.06)';ectx.lineWidth=.5;
+  for(let i=0;i<=10;i++){ectx.beginPath();ectx.moveTo(i*w/10,0);ectx.lineTo(i*w/10,h);ectx.stroke();ectx.beginPath();ectx.moveTo(0,i*h/10);ectx.lineTo(w,i*h/10);ectx.stroke();}
+  const au=[[.15,.35],[.2,.28],[.35,.18],[.55,.2],[.7,.25],[.82,.3],[.9,.45],[.88,.6],[.75,.72],[.6,.8],[.45,.82],[.3,.78],[.18,.7],[.1,.55],[.12,.44]];
+  ectx.beginPath();au.forEach((p,i)=>{const x=p[0]*w,y=p[1]*h;i===0?ectx.moveTo(x,y):ectx.lineTo(x,y);});ectx.closePath();ectx.strokeStyle='rgba(176,107,255,0.2)';ectx.lineWidth=1;ectx.stroke();ectx.fillStyle='rgba(176,107,255,0.04)';ectx.fill();
+  FLIGHTS.forEach((f,i)=>{
+    evtolAngles[i]+=.012;
+    const bx=f.status==='vertiport'?f.px*w:f.px*w+Math.sin(evtolAngles[i])*4;
+    const by=f.status==='vertiport'?f.py*h:f.py*h+Math.cos(evtolAngles[i]*1.2)*3;
+    const col=f.status==='cruise'?'#b06bff':f.status==='approach'?'#00ff9d':f.status==='descent'?'#ff6b35':'#7ba3b8';
+    ectx.beginPath();ectx.arc(bx,by,10,0,Math.PI*2);ectx.fillStyle=col+'18';ectx.fill();
+    ectx.beginPath();ectx.arc(bx,by,4,0,Math.PI*2);ectx.fillStyle=col;ectx.fill();
+    ectx.font="9px 'Share Tech Mono'";ectx.fillStyle=col;ectx.fillText(f.id,bx+7,by-4);
+    ectx.font="8px 'Share Tech Mono'";ectx.fillStyle='rgba(123,163,184,0.6)';ectx.fillText(f.alt>0?f.alt+'m':'GRND',bx+7,by+6);
+  });
+  evtolAnim2=requestAnimationFrame(drawEvtol);
+}
+function fillEvtolTable(){
+  const t=document.getElementById('evtolTable');t.innerHTML='';
+  FLIGHTS.forEach(f=>{const tr=document.createElement('tr');tr.innerHTML=`<td style="color:var(--accent4)">${f.id}</td><td>${f.route}</td><td>${f.alt>0?f.alt+' m':'—'}</td><td>${f.speed>0?f.speed+' km/h':'—'}</td><td>${f.eta}</td><td><span class="craft-status ${f.status}">${f.status.toUpperCase()}</span></td>`;t.appendChild(tr);});
+}
+
+// NASA DATA
+async function loadNASAData(){
+  const today=new Date(),end=new Date(today);end.setDate(end.getDate()+7);
+  const fmt=d=>d.toISOString().split('T')[0];
+  try{
+    const res=await fetch(`https://api.nasa.gov/neo/rest/v1/feed?start_date=${fmt(today)}&end_date=${fmt(end)}&api_key=DEMO_KEY`);
+    const data=await res.json();
+    let all=[];Object.values(data.near_earth_objects).forEach(d=>d.forEach(n=>all.push(n)));
+    all.sort((a,b)=>parseFloat(a.close_approach_data[0]?.miss_distance?.lunar||999)-parseFloat(b.close_approach_data[0]?.miss_distance?.lunar||999));
+    document.getElementById('statTracked').textContent=data.element_count.toLocaleString();
+    document.getElementById('statApproach').textContent=all.length;
+    document.getElementById('statHazard').textContent=all.filter(n=>n.is_potentially_hazardous_asteroid).length;
+    document.getElementById('nasaFeedStatus').textContent='CONNECTED';document.getElementById('nasaFeedStatus').style.color='var(--accent2)';
+    document.getElementById('chatNEOCount').textContent=all.length;
+    document.getElementById('chatHazardCount').textContent=all.filter(n=>n.is_potentially_hazardous_asteroid).length;
+    document.getElementById('chatClosest').textContent=parseFloat(all[0]?.close_approach_data[0]?.miss_distance?.lunar||0).toFixed(2)+' LD';
+    window.neoData=all;
+    const tbody=document.getElementById('neoTableBody');tbody.innerHTML='';
+    all.slice(0,12).forEach(neo=>{
+      const ca=neo.close_approach_data[0],dist=parseFloat(ca.miss_distance.lunar).toFixed(2),vel=parseFloat(ca.relative_velocity.kilometers_per_second).toFixed(2);
+      const dm=neo.estimated_diameter.meters,size=`${Math.round(dm.estimated_diameter_min)}–${Math.round(dm.estimated_diameter_max)}m`;
+      const dn=parseFloat(dist),haz=neo.is_potentially_hazardous_asteroid;
+      let risk,rc,fc,fw;
+      if(haz||dn<5){risk='HIGH';rc='risk-high';fc='#ff4444';fw='85%';}else if(dn<15){risk='MED';rc='risk-med';fc='#ff6b35';fw='50%';}else{risk='LOW';rc='risk-low';fc='#00ff9d';fw='20%';}
+      const tr=document.createElement('tr');
+      tr.innerHTML=`<td style="color:var(--accent);font-size:.6rem">${neo.name.replace(/[()]/g,'').trim()}</td><td>${ca.close_approach_date}</td><td>${dist} LD</td><td>${vel}</td><td>${size}</td><td><div class="risk-bar"><span class="${rc}">${risk}</span><div class="risk-bar-track"><div class="risk-bar-fill" style="width:${fw};background:${fc}"></div></div></div></td>`;
+      tbody.appendChild(tr);
+    });
+  }catch(e){
+    document.getElementById('statTracked').textContent='34,218';document.getElementById('statApproach').textContent='6';document.getElementById('statHazard').textContent='1';
+    document.getElementById('chatNEOCount').textContent='6';document.getElementById('chatHazardCount').textContent='1';document.getElementById('chatClosest').textContent='0.80 LD';
+    document.getElementById('nasaFeedStatus').textContent='DEMO MODE';
+    const demo=[
+      {n:'2024 PT5',d:'2026-05-08',di:'0.80',v:'12.4',s:'~10m',r:'HIGH',rc:'risk-high',fc:'#ff4444',fw:'85%'},
+      {n:'2025 QF3',d:'2026-05-09',di:'4.20',v:'8.7',s:'~45m',r:'MED',rc:'risk-med',fc:'#ff6b35',fw:'50%'},
+      {n:'2023 DW', d:'2026-05-10',di:'12.60',v:'21.3',s:'~120m',r:'MED',rc:'risk-med',fc:'#ff6b35',fw:'50%'},
+      {n:'2024 BX1',d:'2026-05-11',di:'18.90',v:'6.2',s:'~8m',r:'LOW',rc:'risk-low',fc:'#00ff9d',fw:'20%'},
+      {n:'2022 AP7',d:'2026-05-12',di:'24.10',v:'15.8',s:'~1.5km',r:'LOW',rc:'risk-low',fc:'#00ff9d',fw:'20%'},
+      {n:'2025 LX9',d:'2026-05-13',di:'6.70',v:'9.4',s:'~62m',r:'MED',rc:'risk-med',fc:'#ff6b35',fw:'50%'},
+    ];
+    const tbody=document.getElementById('neoTableBody');tbody.innerHTML='';
+    demo.forEach(x=>{const tr=document.createElement('tr');tr.innerHTML=`<td style="color:var(--accent);font-size:.6rem">${x.n}</td><td>${x.d}</td><td>${x.di} LD</td><td>${x.v}</td><td>${x.s}</td><td><div class="risk-bar"><span class="${x.rc}">${x.r}</span><div class="risk-bar-track"><div class="risk-bar-fill" style="width:${x.fw};background:${x.fc}"></div></div></div></td>`;tbody.appendChild(tr);});
+    window.neoData=[];
+  }
+}
+
+// Auto-resize textarea
+function autoResize(el){el.style.height='auto';el.style.height=Math.min(el.scrollHeight,120)+'px';}
+
+// CHATBOT
+let convHistory=[],currentGoal='Space Communications Expert',chatLoading=false;
+function updateGoal(){currentGoal=document.getElementById('careerGoal').value;addMsg('ai',`Goal updated. I'll frame all space intelligence through the lens of a <span class="hl">${currentGoal}</span>. What would you like to explore?`);}
+function getSystemPrompt(){
+  const ns=window.neoData&&window.neoData.length>0?`Live NASA data: ${window.neoData.length} NEOs approaching next 7 days. ${window.neoData.filter(n=>n.is_potentially_hazardous_asteroid).length} potentially hazardous.`:'NASA NEO data available for context.';
+  return `You are Astral Vision, an AI space intelligence system. Help students, researchers, and satellite operators understand near-Earth objects, space debris, orbital mechanics, eVTOL airspace, and space safety.
+
+Career goal: ${currentGoal}. Frame ALL responses through this lens.
+
+${ns}
+
+Knowledge: ICRAR, SmartSat CRC, Australian Space Agency, CSIRO Space, NASA JPL, ESA Space Debris Office.
+
+Facts: ~27,000 debris ≥10cm in LEO. Space debris costs $100M+/year. Astral Vision uses light scanners measuring speed, angle, albedo to predict trajectories accounting for Earth's gravity. Platform also tracks domestic eVTOL aircraft across Australian corridors in 3D.
+
+Be conversational, educational, inspiring. 3–5 sentences unless detail needed. End with: "You might also ask: [q1] / [q2]". Never invent real-time data — say "based on current modelling".`;
+}
+function addMsg(role,content,typing=false){
+  const c=document.getElementById('chatMessages');
+  if(typing){const d=document.createElement('div');d.className='message ai';d.id='typingInd';d.innerHTML=`<div class="msg-label">ASTRAL VISION AI</div><div class="typing-indicator"><div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div></div>`;c.appendChild(d);c.scrollTop=c.scrollHeight;return;}
+  document.getElementById('typingInd')?.remove();
+  const d=document.createElement('div');d.className=`message ${role}`;
+  d.innerHTML=`<div class="msg-label">${role==='ai'?'ASTRAL VISION AI':'YOU'}</div><div class="msg-bubble">${content}</div>`;
+  c.appendChild(d);c.scrollTop=c.scrollHeight;
+}
+function setSuggestions(qs){
+  const a=document.getElementById('suggestionArea');a.innerHTML='';
+  qs.forEach(q=>{const b=document.createElement('button');b.className='sug-btn';b.textContent=q;b.onclick=()=>{document.getElementById('chatInput').value=q;sendMessage();};a.appendChild(b);});
+}
+async function sendMessage(){
+  if(chatLoading)return;
+  const inp=document.getElementById('chatInput'),text=inp.value.trim();if(!text)return;
+  inp.value='';document.getElementById('sendBtn').disabled=true;chatLoading=true;
+  addMsg('user',text);convHistory.push({role:'user',content:text});addMsg('ai','',true);
+  try{
+    const res=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1000,system:getSystemPrompt(),messages:convHistory})});
+    const data=await res.json();
+    const reply=data.content?.[0]?.text||'Unable to retrieve response.';
+    convHistory.push({role:'assistant',content:reply});
+    let fmt=reply.replace(/\*\*(.*?)\*\*/g,'<strong style="color:var(--accent)">$1</strong>').replace(/`(.*?)`/g,'<span style="font-family:var(--mono);color:var(--accent2);font-size:.76rem">$1</span>').replace(/\n/g,'<br>');
+    addMsg('ai',fmt);
+    const m=reply.match(/[Yy]ou might also ask[:\s]+([\s\S]*?)(?:\n\n|$)/);
+    if(m){const qs=m[1].split(/[\/\n]/).map(q=>q.replace(/^[-•\d.]+\s*/,'').trim()).filter(q=>q.length>5).slice(0,3);setSuggestions(qs);}
+  }catch(e){addMsg('ai','Connection issue encountered. Please check your internet connection and try again.');}
+  document.getElementById('sendBtn').disabled=false;chatLoading=false;
+}
+function initChat(){
+  addMsg('ai',`👋 Hey! I'm the <span class="hl">Astral Vision AI</span> — your space intelligence assistant.<br><br>I have live NASA JPL data loaded right now, so I can tell you what asteroids are approaching Earth this week, discuss space debris risks, explain orbital mechanics, or help you think through anything space-related.<br><br>I've set your career goal to <strong>${currentGoal}</strong> — everything I say will be framed around that. You can change it anytime using the dropdown above.<br><br>What would you like to explore?`);
+  setSuggestions([
+    'What asteroids are approaching Earth this week?',
+    'How dangerous is space debris to satellites right now?',
+    'Explain orbital decay in simple terms',
+    'What does Astral Vision\'s light scanner actually do?'
+  ]);
+}
+
+// LOAD SEQUENCE
+const lms=['INITIALISING ORBITAL SENSORS...','CONNECTING TO NASA JPL FEED...','CALIBRATING LIGHT SCANNER ARRAY...','LOADING ASTRAL VISION MODULES...','ONLINE'];
+let lmi=0;const lmiv=setInterval(()=>{lmi++;if(lmi<lms.length)document.getElementById('loadStatus').textContent=lms[lmi];else clearInterval(lmiv);},380);
+setTimeout(()=>{const ls=document.getElementById('loadScreen');ls.style.opacity='0';setTimeout(()=>{ls.style.display='none';},500);loadNASAData();fillEvtolTable();},2000);
+</script>
+</body>
+</html>
