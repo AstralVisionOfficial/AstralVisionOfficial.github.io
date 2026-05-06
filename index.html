@@ -37,6 +37,7 @@ header{display:flex;align-items:center;justify-content:space-between;padding:.75
 /* PAGES */
 .page{display:none;flex:1;}
 .page.active{display:block;}
+#hubPage.active{display:flex;}
 /* SHARED */
 .section-label{font-family:var(--mono);font-size:.62rem;letter-spacing:.2em;color:var(--text2);text-transform:uppercase;display:flex;align-items:center;gap:10px;margin-bottom:10px;}
 .section-label::after{content:'';flex:1;height:1px;background:var(--border);}
@@ -622,7 +623,9 @@ function showPage(id,btn){
   document.querySelectorAll('.page').forEach(p=>{p.style.display='none';p.classList.remove('active');});
   document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
   const pg=document.getElementById(id+'Page');
-  pg.style.display='block';pg.classList.add('active');
+  // Hub uses flex for centering — all others use block
+  pg.style.display = (id==='hub') ? 'flex' : 'block';
+  pg.classList.add('active');
   if(btn)btn.classList.add('active');
   if(id==='neo'&&!window.orbitInited){window.orbitInited=true;initOrbitMap();}
   if(id==='evtol'&&!window.evtolInited){window.evtolInited=true;initEvtolMap();}
