@@ -752,60 +752,110 @@ async function loadNASAData(){
 function autoResize(el){el.style.height='auto';el.style.height=Math.min(el.scrollHeight,120)+'px';}
 
 // CHATBOT
+const GEMINI_KEY='AIzaSyAW3DQ4MqKDg3nO3uZXLGJsi8J7ZhDF7UE';
+const GEMINI_URL='https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key='+GEMINI_KEY;
 let convHistory=[],currentGoal='Space Communications Expert',chatLoading=false;
-function updateGoal(){currentGoal=document.getElementById('careerGoal').value;addMsg('ai',`Goal updated. I'll frame all space intelligence through the lens of a <span class="hl">${currentGoal}</span>. What would you like to explore?`);}
-function getSystemPrompt(){
-  const ns=window.neoData&&window.neoData.length>0?`Live NASA data: ${window.neoData.length} NEOs approaching next 7 days. ${window.neoData.filter(n=>n.is_potentially_hazardous_asteroid).length} potentially hazardous.`:'NASA NEO data available for context.';
-  return `You are Astral Vision, an AI space intelligence system. Help students, researchers, and satellite operators understand near-Earth objects, space debris, orbital mechanics, eVTOL airspace, and space safety.
 
-Career goal: ${currentGoal}. Frame ALL responses through this lens.
-
-${ns}
-
-Knowledge: ICRAR, SmartSat CRC, Australian Space Agency, CSIRO Space, NASA JPL, ESA Space Debris Office.
-
-Facts: ~27,000 debris ≥10cm in LEO. Space debris costs $100M+/year. Astral Vision uses light scanners measuring speed, angle, albedo to predict trajectories accounting for Earth's gravity. Platform also tracks domestic eVTOL aircraft across Australian corridors in 3D.
-
-Be conversational, educational, inspiring. 3–5 sentences unless detail needed. End with: "You might also ask: [q1] / [q2]". Never invent real-time data — say "based on current modelling".`;
+function updateGoal(){
+  currentGoal=document.getElementById('careerGoal').value;
+  addMsg('ai','Got it! I\'ll now frame everything through the lens of a <span class="hl">'+currentGoal+'</span>. What would you like to know?');
 }
+
+function buildSystemPrompt(){
+  const neoCount=window.neoData&&window.neoData.length>0?window.neoData.length:0;
+  const hazCount=neoCount>0?window.neoData.filter(n=>n.is_potentially_hazardous_asteroid).length:0;
+  const closestLD=neoCount>0?parseFloat(window.neoData[0].close_approach_data[0].miss_distance.lunar).toFixed(2):'unknown';
+  const topNEOs=neoCount>0?window.neoData.slice(0,5).map(n=>{
+    const ca=n.close_approach_data[0];
+    return '- '+n.name.replace(/[()]/g,'').trim()+': '+parseFloat(ca.miss_distance.lunar).toFixed(2)+' lunar distances on '+ca.close_approach_date+', speed '+parseFloat(ca.relative_velocity.kilometers_per_second).toFixed(1)+' km/s, potentially hazardous: '+n.is_potentially_hazardous_asteroid;
+  }).join('\n'):'No live data.';
+
+  return 'You are the Astral Vision AI, a friendly and knowledgeable space intelligence assistant. You are built into the Astral Vision platform — an Australian space technology project that tracks near-Earth objects, space debris, and domestic eVTOL aircraft.\n\nPersonality: warm, conversational, and genuinely enthusiastic about space. Talk like a knowledgeable friend, not a textbook. You can have normal conversations too.\n\nUser career goal: '+currentGoal+'. Weave this naturally into answers where relevant.\n\nLIVE NASA DATA RIGHT NOW:\n- '+neoCount+' near-Earth objects approaching in the next 7 days\n- '+hazCount+' classified as potentially hazardous\n- Closest approach this week: '+closestLD+' lunar distances\nTop NEOs this week:\n'+topNEOs+'\n\nAstral Vision platform:\n- Light scanners measure speed, angle, albedo of space objects\n- AI predicts trajectories accounting for Earth gravity\n- Tracks 27,000+ debris fragments over 10cm in LEO\n- Space debris causes $100M+ in satellite damage annually\n- Also tracks domestic eVTOL electric aircraft across Australian corridors in 3D\n- Knowledge sources: ICRAR, SmartSat CRC, Australian Space Agency, CSIRO, NASA JPL, ESA\n\nHow to respond:\n- Natural paragraphs, not bullet points unless listing things\n- 2 to 3 paragraphs max unless they ask for more detail\n- Use the live NASA data when answering questions about current asteroids\n- Never invent specific numbers — say based on current modelling if estimating\n- End every response with exactly this on a new line: You might also ask: [short question 1] / [short question 2]';
+}
+
 function addMsg(role,content,typing=false){
   const c=document.getElementById('chatMessages');
-  if(typing){const d=document.createElement('div');d.className='message ai';d.id='typingInd';d.innerHTML=`<div class="msg-label">ASTRAL VISION AI</div><div class="typing-indicator"><div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div></div>`;c.appendChild(d);c.scrollTop=c.scrollHeight;return;}
+  if(typing){
+    const d=document.createElement('div');d.className='message ai';d.id='typingInd';
+    d.innerHTML='<div class="msg-label">ASTRAL VISION AI</div><div class="typing-indicator"><div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div></div>';
+    c.appendChild(d);c.scrollTop=c.scrollHeight;return;
+  }
   document.getElementById('typingInd')?.remove();
-  const d=document.createElement('div');d.className=`message ${role}`;
-  d.innerHTML=`<div class="msg-label">${role==='ai'?'ASTRAL VISION AI':'YOU'}</div><div class="msg-bubble">${content}</div>`;
+  const d=document.createElement('div');d.className='message '+role;
+  d.innerHTML='<div class="msg-label">'+(role==='ai'?'ASTRAL VISION AI':'YOU')+'</div><div class="msg-bubble">'+content+'</div>';
   c.appendChild(d);c.scrollTop=c.scrollHeight;
 }
+
 function setSuggestions(qs){
   const a=document.getElementById('suggestionArea');a.innerHTML='';
-  qs.forEach(q=>{const b=document.createElement('button');b.className='sug-btn';b.textContent=q;b.onclick=()=>{document.getElementById('chatInput').value=q;sendMessage();};a.appendChild(b);});
+  qs.forEach(q=>{
+    const b=document.createElement('button');b.className='sug-btn';b.textContent=q;
+    b.onclick=()=>{document.getElementById('chatInput').value=q;sendMessage();};
+    a.appendChild(b);
+  });
 }
+
+function formatReply(text){
+  return text
+    .replace(/\*\*(.*?)\*\*/g,'<strong style="color:var(--accent)">$1</strong>')
+    .replace(/\*(.*?)\*/g,'<em>$1</em>')
+    .replace(/`(.*?)`/g,'<span style="font-family:var(--mono);color:var(--accent2);font-size:.78rem">$1</span>')
+    .replace(/\n/g,'<br>');
+}
+
 async function sendMessage(){
   if(chatLoading)return;
-  const inp=document.getElementById('chatInput'),text=inp.value.trim();if(!text)return;
-  inp.value='';document.getElementById('sendBtn').disabled=true;chatLoading=true;
-  addMsg('user',text);convHistory.push({role:'user',content:text});addMsg('ai','',true);
+  const inp=document.getElementById('chatInput'),text=inp.value.trim();
+  if(!text)return;
+  inp.value='';inp.style.height='auto';
+  document.getElementById('sendBtn').disabled=true;chatLoading=true;
+  addMsg('user',text);
+  convHistory.push({role:'user',parts:[{text:text}]});
+  addMsg('ai','',true);
   try{
-    const res=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1000,system:getSystemPrompt(),messages:convHistory})});
+    // Build contents with system prompt prepended as first message
+    const systemMsg={role:'user',parts:[{text:'SYSTEM INSTRUCTIONS - follow these for the entire conversation:\n\n'+buildSystemPrompt()}]};
+    const systemAck={role:'model',parts:[{text:'Understood. I am the Astral Vision AI and will follow those instructions throughout our conversation.'}]};
+    const fullContents=[systemMsg,systemAck,...convHistory];
+    const res=await fetch(GEMINI_URL,{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({
+        contents:fullContents,
+        generationConfig:{maxOutputTokens:800,temperature:0.75}
+      })
+    });
     const data=await res.json();
-    const reply=data.content?.[0]?.text||'Unable to retrieve response.';
-    convHistory.push({role:'assistant',content:reply});
-    let fmt=reply.replace(/\*\*(.*?)\*\*/g,'<strong style="color:var(--accent)">$1</strong>').replace(/`(.*?)`/g,'<span style="font-family:var(--mono);color:var(--accent2);font-size:.76rem">$1</span>').replace(/\n/g,'<br>');
-    addMsg('ai',fmt);
+    if(data.error){throw new Error(data.error.message);}
+    const reply=data.candidates?.[0]?.content?.parts?.[0]?.text||'Sorry, I could not generate a response. Please try again.';
+    convHistory.push({role:'model',parts:[{text:reply}]});
+    addMsg('ai',formatReply(reply));
     const m=reply.match(/[Yy]ou might also ask[:\s]+([\s\S]*?)(?:\n\n|$)/);
-    if(m){const qs=m[1].split(/[\/\n]/).map(q=>q.replace(/^[-•\d.]+\s*/,'').trim()).filter(q=>q.length>5).slice(0,3);setSuggestions(qs);}
-  }catch(e){addMsg('ai','Connection issue encountered. Please check your internet connection and try again.');}
+    if(m){
+      const qs=m[1].split('/').map(q=>q.replace(/^[-•*\d.\s]+/,'').trim()).filter(q=>q.length>5&&q.length<120).slice(0,3);
+      if(qs.length>0)setSuggestions(qs);
+    }
+  }catch(e){
+    console.error(e);
+    let errMsg='Connection issue — please try again.';
+    if(e.message&&e.message.includes('API_KEY'))errMsg='API key issue — please check the Gemini key is active.';
+    if(e.message&&e.message.includes('fetch'))errMsg='Network error — please check your internet connection.';
+    if(e.message&&e.message.includes('quota'))errMsg='Daily limit reached — the free Gemini tier has a daily cap. Try again tomorrow.';
+    addMsg('ai',errMsg);
+  }
   document.getElementById('sendBtn').disabled=false;chatLoading=false;
 }
+
 function initChat(){
-  addMsg('ai',`👋 Hey! I'm the <span class="hl">Astral Vision AI</span> — your space intelligence assistant.<br><br>I have live NASA JPL data loaded right now, so I can tell you what asteroids are approaching Earth this week, discuss space debris risks, explain orbital mechanics, or help you think through anything space-related.<br><br>I've set your career goal to <strong>${currentGoal}</strong> — everything I say will be framed around that. You can change it anytime using the dropdown above.<br><br>What would you like to explore?`);
+  addMsg('ai','Hey! I\'m the <span class="hl">Astral Vision AI</span> — your space intelligence assistant.<br><br>I have live NASA JPL data loaded so I can tell you exactly what asteroids are approaching Earth this week, talk through space debris risks, explain orbital mechanics, or just chat about anything space-related.<br><br>Your career goal is set to <strong>'+currentGoal+'</strong> — I\'ll keep that in mind, but feel free to change it with the dropdown above. What would you like to explore?');
   setSuggestions([
     'What asteroids are approaching Earth this week?',
-    'How dangerous is space debris to satellites right now?',
+    'How dangerous is space debris to satellites?',
     'Explain orbital decay in simple terms',
-    'What does Astral Vision\'s light scanner actually do?'
+    'What does Astral Vision\'s light scanner do?'
   ]);
 }
+
 
 // LOAD SEQUENCE
 const lms=['INITIALISING ORBITAL SENSORS...','CONNECTING TO NASA JPL FEED...','CALIBRATING LIGHT SCANNER ARRAY...','LOADING ASTRAL VISION MODULES...','ONLINE'];
