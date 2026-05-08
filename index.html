@@ -259,6 +259,70 @@ tr:last-child td{border-bottom:none;}tr:hover td{background:rgba(0,212,255,.04);
   .hub-card-icon{flex-shrink:0;}
   .hub-card-cat{font-size:.52rem;}
 }
+
+/* ═══════════════════════════════════════
+   SIGNATURE COLOUR SYSTEM
+   --accent (#00d4ff) = ONE signature use
+   Everything else uses text2 / bg2 / border
+═══════════════════════════════════════ */
+
+/* MISSION STATEMENT */
+.mission-section{padding:3.5rem 2rem;text-align:center;border-bottom:1px solid var(--border);position:relative;}
+.mission-section::before{content:'';position:absolute;top:0;left:50%;transform:translateX(-50%);width:1px;height:40px;background:linear-gradient(to bottom,transparent,var(--accent));}
+.mission-tag{font-family:var(--mono);font-size:.6rem;letter-spacing:.25em;color:var(--accent);text-transform:uppercase;margin-bottom:1.5rem;display:block;}
+.mission-statement{font-size:1.4rem;font-weight:700;color:var(--text);max-width:700px;margin:0 auto 1rem;line-height:1.5;letter-spacing:-.01em;}
+.mission-statement em{color:var(--accent);font-style:normal;}
+.mission-body{font-size:.85rem;color:var(--text2);max-width:560px;margin:0 auto;line-height:1.8;}
+
+/* ROADMAP */
+.roadmap-section{padding:3.5rem 2rem;border-bottom:1px solid var(--border);}
+.roadmap-title{font-family:var(--mono);font-size:.62rem;letter-spacing:.22em;color:var(--text2);text-transform:uppercase;text-align:center;margin-bottom:2.5rem;}
+.roadmap-track{display:flex;align-items:flex-start;justify-content:center;gap:0;max-width:900px;margin:0 auto;position:relative;}
+.roadmap-track::before{content:'';position:absolute;top:18px;left:10%;right:10%;height:1px;background:linear-gradient(90deg,transparent,var(--border2),var(--border2),transparent);}
+.roadmap-node{flex:1;display:flex;flex-direction:column;align-items:center;gap:10px;position:relative;padding:0 .5rem;}
+.roadmap-dot{width:36px;height:36px;border-radius:50%;border:1.5px solid var(--border);background:var(--bg2);display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:.6rem;color:var(--text2);position:relative;z-index:1;transition:all .3s;flex-shrink:0;}
+.roadmap-node.done .roadmap-dot{border-color:var(--accent);color:var(--accent);box-shadow:0 0 12px rgba(0,212,255,.25);}
+.roadmap-node.active .roadmap-dot{border-color:var(--accent);background:rgba(0,212,255,.1);color:var(--accent);box-shadow:0 0 20px rgba(0,212,255,.4);animation:pulse 2.5s ease-in-out infinite;}
+.roadmap-node.future .roadmap-dot{border-color:var(--border);color:var(--text2);opacity:.5;}
+.roadmap-year{font-family:var(--mono);font-size:.6rem;color:var(--text2);letter-spacing:.1em;}
+.roadmap-node.done .roadmap-year{color:var(--accent);}
+.roadmap-node.active .roadmap-year{color:var(--accent);}
+.roadmap-label{font-size:.75rem;font-weight:600;color:var(--text);text-align:center;line-height:1.3;}
+.roadmap-node.future .roadmap-label{color:var(--text2);opacity:.6;}
+.roadmap-desc{font-family:var(--mono);font-size:.58rem;color:var(--text2);text-align:center;line-height:1.5;opacity:.7;}
+
+/* PARTNERS */
+.partners-section{padding:3rem 2rem;border-bottom:1px solid var(--border);}
+.partners-title{font-family:var(--mono);font-size:.62rem;letter-spacing:.22em;color:var(--text2);text-transform:uppercase;text-align:center;margin-bottom:.5rem;}
+.partners-sub{font-size:.75rem;color:var(--text2);text-align:center;margin-bottom:2rem;opacity:.6;}
+.partners-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;max-width:900px;margin:0 auto 1.5rem;}
+.partner-card{background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:1.25rem 1rem;text-align:center;display:flex;flex-direction:column;align-items:center;gap:8px;transition:border-color .2s;}
+.partner-card:hover{border-color:var(--border2);}
+.partner-card.confirmed{border-color:rgba(0,212,255,.2);}
+.partner-logo{width:44px;height:44px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:.65rem;font-weight:700;letter-spacing:.05em;margin-bottom:2px;}
+.partner-name{font-size:.75rem;font-weight:600;color:var(--text);line-height:1.2;}
+.partner-role{font-family:var(--mono);font-size:.55rem;color:var(--text2);letter-spacing:.08em;}
+.partner-badge{font-family:var(--mono);font-size:.5rem;padding:2px 6px;border-radius:3px;letter-spacing:.08em;}
+.partner-badge.data{background:rgba(0,212,255,.08);color:var(--accent);border:1px solid rgba(0,212,255,.2);}
+.partner-badge.future{background:rgba(123,163,184,.06);color:var(--text2);border:1px solid var(--border);}
+.partners-note{font-family:var(--mono);font-size:.58rem;color:var(--text2);text-align:center;opacity:.5;}
+
+/* HUB BREATHING ROOM */
+#hubPage{gap:1.5rem;}
+.hub-divider{width:40px;height:1px;background:var(--border2);margin:0 auto;}
+
+/* SECTION BREATHING ROOM */
+.section-spacer{height:2rem;}
+.biz-section-gap{margin-bottom:2.5rem;}
+
+@media(max-width:600px){
+  .mission-statement{font-size:1.1rem;}
+  .roadmap-track{flex-direction:column;align-items:flex-start;gap:1rem;}
+  .roadmap-track::before{display:none;}
+  .roadmap-node{flex-direction:row;align-items:flex-start;text-align:left;gap:12px;}
+  .partners-grid{grid-template-columns:repeat(2,1fr);}
+  .mission-section,.roadmap-section,.partners-section{padding:2rem 1rem;}
+}
 </style>
 </head>
 <body>
@@ -286,6 +350,7 @@ tr:last-child td{border-bottom:none;}tr:hover td{background:rgba(0,212,255,.04);
   </div>
   <div class="header-mid">
     <button class="nav-btn active" onclick="showPage('hub',this)">Hub</button>
+    <button class="nav-btn" onclick="showPage('mission',this)">Mission</button>
     <button class="nav-btn" onclick="showPage('neo',this)">NEO Tracker</button>
     <button class="nav-btn" onclick="showPage('chat',this)">AI Console</button>
     <button class="nav-btn" onclick="showPage('biz',this)">Business</button>
@@ -302,7 +367,7 @@ tr:last-child td{border-bottom:none;}tr:hover td{background:rgba(0,212,255,.04);
   <div class="hub-eyebrow">MISSION CONTROL · SELECT MODULE</div>
   <div class="hub-title">Astral Vision</div>
   <div class="hub-sub">INTEGRATED SPACE & AERIAL INTELLIGENCE PLATFORM</div>
-  <div class="hub-desc">Unifying near-Earth object surveillance, AI space intelligence, commercial data services, and domestic aerial transport tracking.</div>
+  <div class="hub-divider"></div>
   <div class="hub-cards">
     <div class="hub-card c1" onclick="showPage('neo',document.querySelectorAll('.nav-btn')[1])">
       <div class="hub-card-icon">01</div>
@@ -333,6 +398,118 @@ tr:last-child td{border-bottom:none;}tr:hover td{background:rgba(0,212,255,.04);
       <div class="hub-card-arrow">ENTER MODULE →</div>
     </div>
   </div>
+  <div style="font-family:var(--mono);font-size:.6rem;color:var(--text2);letter-spacing:.1em;text-align:center;margin-top:.25rem;">
+    <span style="cursor:pointer;transition:color .2s;" onmouseover="this.style.color='#00d4ff'" onmouseout="this.style.color=''" onclick="showPage('mission',document.querySelectorAll('.nav-btn')[1])">
+      VIEW MISSION · ROADMAP · PARTNERS →
+    </span>
+  </div>
+</div>
+
+<!-- MISSION STATEMENT -->
+<div class="page" id="missionPage" style="display:none;overflow-y:auto;">
+
+  <div class="mission-section">
+    <span class="mission-tag">Our Mission</span>
+    <div class="mission-statement">
+      Making space <em>safer</em>, smarter, and more accessible — for Australia and the world.
+    </div>
+    <div class="mission-body">
+      Astral Vision is building the intelligence layer that the near-Earth environment urgently needs. By combining light-scanner technology, AI-driven prediction, and open educational access, we are turning space situational awareness from an expensive government capability into a platform anyone can use — and everyone benefits from.<br><br>The same AI framework that tracks debris in orbit is also being applied to domestic airspace — monitoring eVTOL electric aircraft across Australian cities in real time, mapping 3D flight corridors, and keeping low-altitude transport as safe as the skies above.
+    </div>
+  </div>
+
+  <div class="roadmap-section">
+    <div class="roadmap-title">DEVELOPMENT ROADMAP</div>
+    <div class="roadmap-track">
+      <div class="roadmap-node done">
+        <div class="roadmap-dot">✓</div>
+        <div class="roadmap-year">STAGE 01</div>
+        <div class="roadmap-label">The Idea</div>
+        <div class="roadmap-desc">Identified the gap — Australia had no accessible, AI-driven platform for tracking space debris and near-Earth objects</div>
+      </div>
+      <div class="roadmap-node done">
+        <div class="roadmap-dot">✓</div>
+        <div class="roadmap-year">STAGE 02</div>
+        <div class="roadmap-label">Research</div>
+        <div class="roadmap-desc">Deep dive into the space debris problem, orbital mechanics, NASA JPL data, and Australia's space sector needs</div>
+      </div>
+      <div class="roadmap-node done">
+        <div class="roadmap-dot">✓</div>
+        <div class="roadmap-year">STAGE 03</div>
+        <div class="roadmap-label">Expert Feedback</div>
+        <div class="roadmap-desc">Shared the concept with companies and industry experts to validate the problem and refine the solution</div>
+      </div>
+      <div class="roadmap-node active">
+        <div class="roadmap-dot">▶</div>
+        <div class="roadmap-year">STAGE 04</div>
+        <div class="roadmap-label">Prototype</div>
+        <div class="roadmap-desc">Built this platform — live NASA data, AI console, orbital map, eVTOL tracker, and business model</div>
+      </div>
+      <div class="roadmap-node future">
+        <div class="roadmap-dot">○</div>
+        <div class="roadmap-year">NEXT</div>
+        <div class="roadmap-label">What's Coming</div>
+        <div class="roadmap-desc">Hardware development, research partnerships, school access program, and commercial pilot</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="partners-section">
+    <div class="partners-title">Knowledge Partners & Future Collaborators</div>
+    <div class="partners-sub">Data sources powering Astral Vision today, and organisations we are building toward</div>
+    <div class="partners-grid">
+      <div class="partner-card confirmed">
+        <div class="partner-logo" style="background:rgba(0,212,255,.08);color:var(--accent);border:1px solid rgba(0,212,255,.2)">JPL</div>
+        <div class="partner-name">NASA JPL</div>
+        <div class="partner-role">NEO TRACKING DATA</div>
+        <span class="partner-badge data">LIVE DATA</span>
+      </div>
+      <div class="partner-card confirmed">
+        <div class="partner-logo" style="background:rgba(0,255,157,.08);color:var(--accent2);border:1px solid rgba(0,255,157,.2)">ESA</div>
+        <div class="partner-name">ESA Space Debris</div>
+        <div class="partner-role">DEBRIS MODELLING</div>
+        <span class="partner-badge data">LIVE DATA</span>
+      </div>
+      <div class="partner-card">
+        <div class="partner-logo" style="background:rgba(176,107,255,.08);color:var(--accent4);border:1px solid rgba(176,107,255,.2)">ICRAR</div>
+        <div class="partner-name">ICRAR Perth</div>
+        <div class="partner-role">RADIO ASTRONOMY</div>
+        <span class="partner-badge future">TARGET PARTNER</span>
+      </div>
+      <div class="partner-card">
+        <div class="partner-logo" style="background:rgba(176,107,255,.08);color:var(--accent4);border:1px solid rgba(176,107,255,.2)">CSIRO</div>
+        <div class="partner-name">CSIRO Space</div>
+        <div class="partner-role">SPACE RESEARCH</div>
+        <span class="partner-badge future">TARGET PARTNER</span>
+      </div>
+      <div class="partner-card">
+        <div class="partner-logo" style="background:rgba(255,107,53,.08);color:var(--accent3);border:1px solid rgba(255,107,53,.2)">ASA</div>
+        <div class="partner-name">Australian Space Agency</div>
+        <div class="partner-role">NATIONAL STRATEGY</div>
+        <span class="partner-badge future">TARGET PARTNER</span>
+      </div>
+      <div class="partner-card">
+        <div class="partner-logo" style="background:rgba(255,107,53,.08);color:var(--accent3);border:1px solid rgba(255,107,53,.2)">SSC</div>
+        <div class="partner-name">SmartSat CRC</div>
+        <div class="partner-role">SATELLITE RESEARCH</div>
+        <span class="partner-badge future">TARGET PARTNER</span>
+      </div>
+      <div class="partner-card">
+        <div class="partner-logo" style="background:rgba(123,163,184,.08);color:var(--text2);border:1px solid var(--border)">CASA</div>
+        <div class="partner-name">CASA Australia</div>
+        <div class="partner-role">EVTOL AIRSPACE</div>
+        <span class="partner-badge future">TARGET PARTNER</span>
+      </div>
+      <div class="partner-card">
+        <div class="partner-logo" style="background:rgba(123,163,184,.08);color:var(--text2);border:1px solid var(--border)">YOU?</div>
+        <div class="partner-name">Your Organisation</div>
+        <div class="partner-role">OPEN PARTNERSHIP</div>
+        <span class="partner-badge future">GET IN TOUCH</span>
+      </div>
+    </div>
+    <div class="partners-note">Live data partnerships active with NASA JPL and ESA · All other partnerships are targets for future collaboration</div>
+  </div>
+
 </div>
 
 <!-- NEO TRACKER -->
@@ -754,23 +931,159 @@ function autoResize(el){el.style.height='auto';el.style.height=Math.min(el.scrol
 // CHATBOT
 const GEMINI_KEY='AIzaSyAW3DQ4MqKDg3nO3uZXLGJsi8J7ZhDF7UE';
 const GEMINI_URL='https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key='+GEMINI_KEY;
-let convHistory=[],currentGoal='Space Communications Expert',chatLoading=false;
+// ============================================================
+// SMART PRE-BUILT CHATBOT
+// ============================================================
+let currentGoal='Space Communications Expert',chatLoading=false,chatContext=[];
 
 function updateGoal(){
   currentGoal=document.getElementById('careerGoal').value;
-  addMsg('ai','Got it! I\'ll now frame everything through the lens of a <span class="hl">'+currentGoal+'</span>. What would you like to know?');
+  addMsg('ai','Got it! I\'ll frame everything through the lens of a <span class="hl">'+currentGoal+'</span>. What would you like to know?');
+  setSuggestions(getGoalSuggestions());
 }
 
-function buildSystemPrompt(){
-  const neoCount=window.neoData&&window.neoData.length>0?window.neoData.length:0;
-  const hazCount=neoCount>0?window.neoData.filter(n=>n.is_potentially_hazardous_asteroid).length:0;
-  const closestLD=neoCount>0?parseFloat(window.neoData[0].close_approach_data[0].miss_distance.lunar).toFixed(2):'unknown';
-  const topNEOs=neoCount>0?window.neoData.slice(0,5).map(n=>{
-    const ca=n.close_approach_data[0];
-    return '- '+n.name.replace(/[()]/g,'').trim()+': '+parseFloat(ca.miss_distance.lunar).toFixed(2)+' lunar distances on '+ca.close_approach_date+', speed '+parseFloat(ca.relative_velocity.kilometers_per_second).toFixed(1)+' km/s, potentially hazardous: '+n.is_potentially_hazardous_asteroid;
-  }).join('\n'):'No live data.';
+function getGoalSuggestions(){
+  const map={
+    'Astronaut':['How does space debris affect astronaut safety?','What orbital shells are most dangerous?','How does Astral Vision help mission planning?'],
+    'Astrophysicist':['How does Astral Vision calculate trajectories?','What data does the light scanner capture?','How are NEO collision probabilities modelled?'],
+    'Satellite Engineer':['How does debris threaten satellite operations?','What is orbital decay and how fast does it happen?','How do conjunction alerts work?'],
+    'Space Communications Expert':['How does debris affect communication satellites?','Which orbital bands are most congested?','What is a Kessler cascade?'],
+    'Mission Planner':['How does Astral Vision support mission planning?','What is the 5-year collision outlook?','How do you plan around debris fields?'],
+    'Student Explorer':['What is space debris exactly?','How close do asteroids actually get to Earth?','What careers exist in space situational awareness?'],
+    'eVTOL Pilot':['How does eVTOL tracking work in Astral Vision?','What Australian corridors are mapped?','How does airspace AI differ from orbital AI?']
+  };
+  return map[currentGoal]||map['Student Explorer'];
+}
 
-  return 'You are the Astral Vision AI, a friendly and knowledgeable space intelligence assistant. You are built into the Astral Vision platform — an Australian space technology project that tracks near-Earth objects, space debris, and domestic eVTOL aircraft.\n\nPersonality: warm, conversational, and genuinely enthusiastic about space. Talk like a knowledgeable friend, not a textbook. You can have normal conversations too.\n\nUser career goal: '+currentGoal+'. Weave this naturally into answers where relevant.\n\nLIVE NASA DATA RIGHT NOW:\n- '+neoCount+' near-Earth objects approaching in the next 7 days\n- '+hazCount+' classified as potentially hazardous\n- Closest approach this week: '+closestLD+' lunar distances\nTop NEOs this week:\n'+topNEOs+'\n\nAstral Vision platform:\n- Light scanners measure speed, angle, albedo of space objects\n- AI predicts trajectories accounting for Earth gravity\n- Tracks 27,000+ debris fragments over 10cm in LEO\n- Space debris causes $100M+ in satellite damage annually\n- Also tracks domestic eVTOL electric aircraft across Australian corridors in 3D\n- Knowledge sources: ICRAR, SmartSat CRC, Australian Space Agency, CSIRO, NASA JPL, ESA\n\nHow to respond:\n- Natural paragraphs, not bullet points unless listing things\n- 2 to 3 paragraphs max unless they ask for more detail\n- Use the live NASA data when answering questions about current asteroids\n- Never invent specific numbers — say based on current modelling if estimating\n- End every response with exactly this on a new line: You might also ask: [short question 1] / [short question 2]';
+// Knowledge base — keyword matched responses
+const KB=[
+  {
+    keys:['asteroid','asteroids','approaching','this week','near earth','neo','close approach'],
+    answer:function(){
+      if(window.neoData&&window.neoData.length>0){
+        const n=window.neoData.length;
+        const haz=window.neoData.filter(x=>x.is_potentially_hazardous_asteroid).length;
+        const closest=window.neoData[0];
+        const ca=closest.close_approach_data[0];
+        const dist=parseFloat(ca.miss_distance.lunar).toFixed(2);
+        const vel=parseFloat(ca.relative_velocity.kilometers_per_second).toFixed(1);
+        const name=closest.name.replace(/[()]/g,'').trim();
+        const top3=window.neoData.slice(0,3).map(x=>{
+          const c=x.close_approach_data[0];
+          return '<strong style="color:var(--accent)">'+x.name.replace(/[()]/g,'').trim()+'</strong> — '+parseFloat(c.miss_distance.lunar).toFixed(2)+' lunar distances on '+c.close_approach_date;
+        }).join('<br>');
+        return 'Based on live NASA JPL data, there are currently <strong style="color:var(--accent)">'+n+' near-Earth objects</strong> approaching within the next 7 days, with <strong style="color:#ff4444">'+haz+' classified as potentially hazardous</strong>.<br><br>The closest this week is <strong style="color:var(--accent)">'+name+'</strong>, passing at just '+dist+' lunar distances at '+vel+' km/s. To put that in perspective, 1 lunar distance is about 384,000 km — so even the closest approaches are still very far away.<br><br>Top 3 closest this week:<br>'+top3+'<br><br>Astral Vision\'s light scanners continuously analyse the speed, angle, and albedo of these objects to model their trajectories and flag any conjunction risks.';
+      }
+      return 'Near-Earth Objects (NEOs) are asteroids and comets whose orbits bring them within 1.3 astronomical units of the Sun — close enough to potentially intersect with Earth\'s path.<br><br>NASA\'s JPL tracks thousands of them continuously. The vast majority pass at safe distances of many lunar distances, but Astral Vision monitors all of them for trajectory changes, conjunction events, and any signs of orbital deviation.<br><br>The platform uses light scanners to measure each object\'s speed, angle, and reflectivity, feeding that data into AI models that predict future positions accounting for Earth\'s gravitational influence.';
+    },
+    suggestions:['Are any of them actually dangerous?','What is a lunar distance?','How does Astral Vision track them?']
+  },
+  {
+    keys:['dangerous','hazardous','threat','risk','collision','hit earth','impact'],
+    answer:function(){
+      const haz=window.neoData?window.neoData.filter(x=>x.is_potentially_hazardous_asteroid).length:0;
+      return 'A Near-Earth Object is classified as <strong style="color:#ff6b35">Potentially Hazardous</strong> when it is larger than about 140 metres and passes within 0.05 astronomical units of Earth — roughly 7.5 million kilometres.<br><br>'+(haz>0?'Right now, '+haz+' of this week\'s approaching objects meet that classification. ':'')+'Being classified as potentially hazardous doesn\'t mean an imminent impact — it means the object\'s orbit brings it close enough that small gravitational nudges over decades could theoretically alter its path.<br><br>For space debris, the risk is more immediate — with over 27,000 tracked fragments flying at speeds of up to 28,000 km/h, even a 1cm piece carries the energy of a hand grenade. Astral Vision\'s conjunction alerts flag when any object comes within a 200km threshold of another, giving operators time to plan avoidance manoeuvres.';
+    },
+    suggestions:['How does Astral Vision predict collisions?','What is space debris exactly?','How does a conjunction alert work?']
+  },
+  {
+    keys:['space debris','junk','fragments','debris'],
+    answer:function(){
+      return 'Space debris refers to any non-functional human-made objects orbiting Earth — dead satellites, spent rocket stages, fragments from collisions and explosions, even paint flecks and screws.<br><br>There are currently <strong style="color:var(--accent)">over 27,000 tracked fragments</strong> larger than 10cm in orbit, and an estimated 500,000 pieces between 1–10cm that are too small to track but still lethal to spacecraft. The total mass of debris in orbit exceeds 9,000 tonnes.<br><br>This costs the satellite industry <strong style="color:#ff6b35">over $100 million every year</strong> in damage, avoidance manoeuvres, and insurance. Astral Vision directly addresses this by providing predictive collision mapping so operators know what\'s coming before it arrives — a capability Australia urgently needs according to Space Connect\'s 2024 report on national space debris infrastructure.';
+    },
+    suggestions:['What is the Kessler cascade?','How does debris affect satellites?','How does Astral Vision track debris?']
+  },
+  {
+    keys:['kessler','cascade','chain reaction'],
+    answer:function(){
+      return 'The <strong style="color:var(--accent)">Kessler Cascade</strong> is one of the most serious long-term risks in space — named after NASA scientist Donald Kessler who proposed it in 1978.<br><br>The theory is that once debris density in low Earth orbit reaches a critical point, collisions between objects generate more debris, which causes more collisions, which generates even more debris — a self-sustaining chain reaction that could render certain orbital shells completely unusable for generations.<br><br>We are not there yet, but the trajectory is concerning. That\'s exactly why platforms like Astral Vision matter — by predicting and preventing even a small number of collisions, we reduce the probability of triggering a cascade that could lock humanity out of key orbital infrastructure for centuries.';
+    },
+    suggestions:['How close are we to a Kessler event?','What orbital shells are most at risk?','How does Astral Vision help prevent this?']
+  },
+  {
+    keys:['orbital decay','decay','re-entry','reentry','atmosphere','burn up','deorbit'],
+    answer:function(){
+      return 'Orbital decay is the gradual lowering of a satellite\'s orbit due to atmospheric drag — even in the near-vacuum of low Earth orbit, there are enough air molecules to slowly bleed energy from a fast-moving object.<br><br>The rate of decay depends on altitude, the object\'s surface area, its mass, and solar activity (which expands Earth\'s atmosphere). At 400km altitude — where the ISS orbits — objects decay and re-enter within years without reboosts. At 800km, decay takes decades. At 36,000km (geostationary orbit), it essentially never happens naturally.<br><br>Astral Vision\'s AI models atmospheric drag in real time using solar flux data, predicting re-entry windows weeks in advance. For satellite operators this is critical — an unexpected early re-entry can mean losing a multi-million dollar asset, or worse, uncontrolled re-entry over populated areas.';
+    },
+    suggestions:['What happens when a satellite re-enters?','Which orbits decay fastest?','How does solar activity affect decay?']
+  },
+  {
+    keys:['light scanner','scanner','how does it work','how it works','technology','tech','sensor'],
+    answer:function(){
+      return 'The Astral Vision light scanner is the core hardware component of the platform. It works by projecting and receiving optical signals to measure three key properties of any object in its field of view:<br><br><strong style="color:var(--accent)">Speed</strong> — using the Doppler shift of reflected light to calculate precise velocity.<br><strong style="color:var(--accent)">Angle</strong> — the azimuth and elevation of the object\'s trajectory relative to Earth\'s surface.<br><strong style="color:var(--accent)">Albedo</strong> — how much light the object reflects, which helps estimate its size and surface composition.<br><br>All three data points feed directly into the Astral Vision AI, which plots the object\'s trajectory, accounts for Earth\'s gravitational influence, and outputs a real-time position model with a predicted future path. The system can be deployed on the ground, mounted on satellites, or integrated into observatories like the James Webb Space Telescope to extend its data-gathering capability.';
+    },
+    suggestions:['How accurate is the light scanner?','Can it detect very small debris?','How does the AI use this data?']
+  },
+  {
+    keys:['evtol','electric aircraft','aerial','domestic','aircraft','flight','corridor','airspace'],
+    answer:function(){
+      return 'The eVTOL Pathways module extends Astral Vision\'s core tracking technology from orbital altitudes down to domestic airspace — applying the same AI prediction framework to electric vertical take-off and landing aircraft flying across Australian cities.<br><br>Just as Astral Vision maps debris corridors in orbit, it maps approved flight corridors for eVTOL at altitudes between 120m and 1,200m. Live ADS-B transponder data feeds into the system, giving a real-time 3D picture of every aircraft\'s position, speed, altitude, and planned route.<br><br>The AI flags potential conflicts between aircraft, advises on corridor congestion, and monitors weather-affected zones — the same conjunction logic that prevents satellite collisions, scaled down to city-level airspace. As Australia\'s eVTOL industry grows with operators entering Australian cities, this infrastructure becomes essential for safe, scalable urban air mobility.';
+    },
+    suggestions:['Which Australian cities are covered?','How does this connect to space tracking?','What data sources power the eVTOL tracker?']
+  },
+  {
+    keys:['australia','australian','icrar','csiro','smartsat','space agency','aus'],
+    answer:function(){
+      return 'Australia has a rapidly growing space sector and Astral Vision is built on the foundation of Australia\'s leading research institutions.<br><br><strong style="color:var(--accent)">ICRAR</strong> (International Centre for Radio Astronomy Research, Perth) provides world-class expertise in detecting and tracking objects across vast distances.<br><strong style="color:var(--accent)">SmartSat CRC</strong> is Australia\'s national satellite research hub, coordinating commercial and academic space technology development.<br><strong style="color:var(--accent)">CSIRO Space & Astronomy</strong> operates the Parkes and ATCA radio telescopes and contributes to space weather and NEO monitoring.<br><strong style="color:var(--accent)">The Australian Space Agency</strong> sets national strategy and licensing — their 2024 roadmap explicitly identifies space situational awareness as a priority.<br><br>A 2024 report by Space Connect highlighted that Australia needs a dedicated national hub for space debris research. Astral Vision is designed to be part of that solution.';
+    },
+    suggestions:['What makes Australia good for space tracking?','How does Astral Vision work with these organisations?','What is the Australian Space Agency working on?']
+  },
+  {
+    keys:['mission','plan','planning','safety','astronaut safety','mission planning'],
+    answer:function(){
+      return 'Mission planning in the modern space environment requires knowing exactly what\'s in the path of your vehicle — at launch, during transit, and in the target orbit.<br><br>Astral Vision supports mission planning by providing a <strong style="color:var(--accent)">7-day conjunction forecast</strong> for any planned orbital path, flagging all tracked objects within a 200km threshold. It models orbital decay curves so planners know how long a given orbit will remain stable, and provides historical fragmentation data for any orbital shell the mission will pass through.<br><br>As a '+currentGoal+', this kind of predictive intelligence is fundamental — whether you\'re planning an EVA, a satellite deployment, or a crew transfer. The difference between a safe mission and a critical incident can come down to knowing about a single piece of debris in the wrong place at the wrong time.';
+    },
+    suggestions:['How does debris affect launch windows?','What is a conjunction alert?','How far ahead can Astral Vision predict?']
+  },
+  {
+    keys:['education','school','university','student','learn','study','career'],
+    answer:function(){
+      return 'Astral Vision\'s Education Portal is designed to bring real space data into classrooms and universities in a way that\'s interactive and career-relevant.<br><br>Students can explore live orbital maps, query the NASA JPL asteroid database, and use the AI console to ask questions framed around their specific career goal — whether that\'s becoming an astronaut, a satellite engineer, or an astrophysicist. Every answer is tailored to make the data relevant to that career path.<br><br>The platform is built on the same data sources used by real space agencies — ICRAR, CSIRO, NASA JPL, and ESA — so students aren\'t working with simplified simulations. They\'re engaging with the actual orbital environment, which makes for a genuinely different kind of space education experience.';
+    },
+    suggestions:['What careers are available in space?','How can schools access Astral Vision?','What does a space communications expert do?']
+  },
+  {
+    keys:['business','commercial','subscription','satellite operator','protect','cost','revenue','money'],
+    answer:function(){
+      return 'The commercial case for Astral Vision is straightforward: space debris causes <strong style="color:#ff6b35">over $100 million in satellite damage globally every year</strong>, and that figure is growing as orbital congestion increases.<br><br>Astral Vision offers satellite operators a subscription data service — predictive collision alerts, orbital decay warnings, off-course detection, and anomaly intelligence. Instead of discovering a problem after it happens, operators get advance warning with enough time to plan avoidance manoeuvres.<br><br>The commercial revenue model is also what makes the educational mission sustainable. Business subscriptions fund the platform\'s development and operation, allowing schools and universities to access the educational tools for free. It\'s a model where protecting billion-dollar satellite assets directly subsidises the next generation of space professionals.';
+    },
+    suggestions:['How much does space debris cost annually?','What does the subscription include?','How does revenue fund education?']
+  },
+  {
+    keys:['hi','hello','hey','howdy','g\'day','sup','what can you do','help','who are you','what are you'],
+    answer:function(){
+      return 'Hey! I\'m the <span class="hl">Astral Vision AI</span> — your space intelligence assistant built into this platform.<br><br>I can walk you through live NASA asteroid data, explain how Astral Vision\'s light scanner technology works, discuss space debris risks, orbital mechanics, eVTOL tracking, Australia\'s space sector, and how all of this connects to your career as a <strong style="color:var(--accent)">'+currentGoal+'</strong>.<br><br>What would you like to know?';
+    },
+    suggestions:['What asteroids are approaching Earth this week?','How does the light scanner work?','What is space debris?']
+  },
+  {
+    keys:['james webb','telescope','satellite','webb'],
+    answer:function(){
+      return 'One of Astral Vision\'s future applications is integrating its AI directly onto orbital platforms like the James Webb Space Telescope or purpose-built tracking satellites.<br><br>In this configuration, the light scanner array orbits Earth rather than observing from the ground — giving it a 360-degree view of the debris environment with no atmospheric interference. Data collected in orbit feeds back to the Astral Vision AI in real time, dramatically improving the accuracy of trajectory predictions and enabling detection of sub-centimetre debris that ground-based systems can\'t resolve.<br><br>This isn\'t science fiction — the European Space Agency\'s ADRIOS mission is already testing active debris removal in orbit, and Australia\'s SmartSat CRC is funding research into on-orbit sensing platforms. Astral Vision is designed to slot directly into that emerging infrastructure.';
+    },
+    suggestions:['How would a satellite-mounted scanner work?','What is ADRIOS?','How does SmartSat CRC support this?']
+  },
+  {
+    keys:['lunar distance','astronomical unit','how far','distance','kilometres','kilometers'],
+    answer:function(){
+      return 'A <strong style="color:var(--accent)">Lunar Distance (LD)</strong> is the average distance between Earth and the Moon — approximately <strong style="color:var(--accent)">384,400 kilometres</strong>. It\'s the standard unit used for reporting close asteroid approaches because it gives an intuitive sense of scale.<br><br>An object at 1 LD is as far away as the Moon. At 0.5 LD it\'s halfway to the Moon. At 10 LD it\'s ten times the Earth-Moon distance — still very close in astronomical terms but nowhere near a concern.<br><br>NASA classifies an object as potentially hazardous if it comes within 0.05 astronomical units (about 19.5 lunar distances) of Earth AND is larger than 140 metres. The vast majority of tracked NEOs pass at much greater distances — the live data on the NEO Tracker shows you exactly how far each one will be at closest approach.';
+    },
+    suggestions:['How close is too close for an asteroid?','What is a potentially hazardous asteroid?','Show me this week\'s closest approaches']
+  }
+];
+
+function findAnswer(input){
+  const text=input.toLowerCase();
+  for(const entry of KB){
+    if(entry.keys.some(k=>text.includes(k))){
+      return {answer:entry.answer(),suggestions:entry.suggestions};
+    }
+  }
+  // Fallback
+  return {
+    answer:'That\'s a great question. Astral Vision covers near-Earth object tracking, space debris prediction, orbital mechanics, eVTOL airspace mapping, and Australia\'s space sector.<br><br>Try asking about asteroids approaching this week, how the light scanner works, what space debris is, orbital decay, the Kessler cascade, or how Astral Vision supports mission planning. I\'m here to help!',
+    suggestions:['What asteroids are approaching Earth this week?','How does the light scanner work?','What is the Kessler cascade?']
+  };
 }
 
 function addMsg(role,content,typing=false){
@@ -795,65 +1108,26 @@ function setSuggestions(qs){
   });
 }
 
-function formatReply(text){
-  return text
-    .replace(/\*\*(.*?)\*\*/g,'<strong style="color:var(--accent)">$1</strong>')
-    .replace(/\*(.*?)\*/g,'<em>$1</em>')
-    .replace(/`(.*?)`/g,'<span style="font-family:var(--mono);color:var(--accent2);font-size:.78rem">$1</span>')
-    .replace(/\n/g,'<br>');
-}
-
-async function sendMessage(){
+function sendMessage(){
   if(chatLoading)return;
   const inp=document.getElementById('chatInput'),text=inp.value.trim();
   if(!text)return;
   inp.value='';inp.style.height='auto';
   document.getElementById('sendBtn').disabled=true;chatLoading=true;
   addMsg('user',text);
-  convHistory.push({role:'user',parts:[{text:text}]});
   addMsg('ai','',true);
-  try{
-    // Build contents with system prompt prepended as first message
-    const systemMsg={role:'user',parts:[{text:'SYSTEM INSTRUCTIONS - follow these for the entire conversation:\n\n'+buildSystemPrompt()}]};
-    const systemAck={role:'model',parts:[{text:'Understood. I am the Astral Vision AI and will follow those instructions throughout our conversation.'}]};
-    const fullContents=[systemMsg,systemAck,...convHistory];
-    const res=await fetch(GEMINI_URL,{
-      method:'POST',
-      headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({
-        contents:fullContents,
-        generationConfig:{maxOutputTokens:800,temperature:0.75}
-      })
-    });
-    const data=await res.json();
-    if(data.error){throw new Error(data.error.message);}
-    const reply=data.candidates?.[0]?.content?.parts?.[0]?.text||'Sorry, I could not generate a response. Please try again.';
-    convHistory.push({role:'model',parts:[{text:reply}]});
-    addMsg('ai',formatReply(reply));
-    const m=reply.match(/[Yy]ou might also ask[:\s]+([\s\S]*?)(?:\n\n|$)/);
-    if(m){
-      const qs=m[1].split('/').map(q=>q.replace(/^[-•*\d.\s]+/,'').trim()).filter(q=>q.length>5&&q.length<120).slice(0,3);
-      if(qs.length>0)setSuggestions(qs);
-    }
-  }catch(e){
-    console.error(e);
-    let errMsg='Connection issue — please try again.';
-    if(e.message&&e.message.includes('API_KEY'))errMsg='API key issue — please check the Gemini key is active.';
-    if(e.message&&e.message.includes('fetch'))errMsg='Network error — please check your internet connection.';
-    if(e.message&&e.message.includes('quota'))errMsg='Daily limit reached — the free Gemini tier has a daily cap. Try again tomorrow.';
-    addMsg('ai',errMsg);
-  }
-  document.getElementById('sendBtn').disabled=false;chatLoading=false;
+  // Simulate thinking delay for realism
+  setTimeout(()=>{
+    const result=findAnswer(text);
+    addMsg('ai',result.answer);
+    setSuggestions(result.suggestions);
+    document.getElementById('sendBtn').disabled=false;chatLoading=false;
+  }, 900+Math.random()*600);
 }
 
 function initChat(){
-  addMsg('ai','Hey! I\'m the <span class="hl">Astral Vision AI</span> — your space intelligence assistant.<br><br>I have live NASA JPL data loaded so I can tell you exactly what asteroids are approaching Earth this week, talk through space debris risks, explain orbital mechanics, or just chat about anything space-related.<br><br>Your career goal is set to <strong>'+currentGoal+'</strong> — I\'ll keep that in mind, but feel free to change it with the dropdown above. What would you like to explore?');
-  setSuggestions([
-    'What asteroids are approaching Earth this week?',
-    'How dangerous is space debris to satellites?',
-    'Explain orbital decay in simple terms',
-    'What does Astral Vision\'s light scanner do?'
-  ]);
+  addMsg('ai','Hey! I\'m the <span class="hl">Astral Vision AI</span> — your space intelligence assistant.<br><br>I have live NASA JPL data loaded so I can tell you exactly what asteroids are approaching Earth this week, explain how Astral Vision works, discuss space debris, orbital mechanics, eVTOL tracking, and Australia\'s space sector.<br><br>Your career goal is set to <strong style="color:var(--accent)">'+currentGoal+'</strong> — I\'ll keep that in mind with every answer. What would you like to explore?');
+  setSuggestions(getGoalSuggestions());
 }
 
 
