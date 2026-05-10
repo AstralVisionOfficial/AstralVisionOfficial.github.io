@@ -748,6 +748,43 @@ tr:last-child td{border-bottom:none;}tr:hover td{background:rgba(0,212,255,.04);
           <tbody id="evtolTable"></tbody>
         </table>
       </div>
+
+      <!-- COLLAPSABLE ABOUT SECTION -->
+      <div class="card-box" style="margin-bottom:1.5rem;">
+        <div class="card-box-header" onclick="toggleEvtolAbout()" style="cursor:pointer;user-select:none;">
+          <div class="card-box-title">ABOUT eVTOL PATHWAYS</div>
+          <div id="evtolAboutChevron" style="font-family:var(--mono);font-size:.7rem;color:var(--accent);transition:transform .3s;">▼</div>
+        </div>
+        <div id="evtolAbout" style="display:none;padding:1.25rem;border-top:1px solid var(--border);">
+          <p style="font-size:.8rem;color:var(--text2);line-height:1.75;margin-bottom:1.1rem;">
+            Astral Vision's eVTOL Pathways module takes the same AI and tracking technology built for orbital space and brings it down to Earth — literally. The same system that predicts debris collisions at 500 kilometres altitude is being adapted to monitor electric vertical take-off and landing aircraft flying across Australian cities at 500 metres. One AI platform, two completely different altitude problems, the same core technology.
+          </p>
+
+          <div style="margin-bottom:1.1rem;">
+            <div style="font-family:var(--mono);font-size:.6rem;letter-spacing:.15em;color:var(--accent);text-transform:uppercase;margin-bottom:.6rem;">What it does</div>
+            <ul style="list-style:none;display:flex;flex-direction:column;gap:.5rem;">
+              <li style="font-size:.78rem;color:var(--text2);line-height:1.6;display:flex;gap:8px;"><span style="color:var(--accent);flex-shrink:0;">—</span>Tracks and monitors domestic eVTOL aircraft across Australian cities in real time</li>
+              <li style="font-size:.78rem;color:var(--text2);line-height:1.6;display:flex;gap:8px;"><span style="color:var(--accent);flex-shrink:0;">—</span>Maps approved flight corridors in 3 dimensions, giving operators a live picture of the airspace</li>
+              <li style="font-size:.78rem;color:var(--text2);line-height:1.6;display:flex;gap:8px;"><span style="color:var(--accent);flex-shrink:0;">—</span>Uses AI to flag potential conflicts between aircraft before they happen — the same conjunction logic used for satellites, scaled to city-level airspace</li>
+              <li style="font-size:.78rem;color:var(--text2);line-height:1.6;display:flex;gap:8px;"><span style="color:var(--accent);flex-shrink:0;">—</span>Monitors weather-affected zones and corridor congestion, advising operators on safe routing</li>
+            </ul>
+          </div>
+
+          <div style="margin-bottom:1.1rem;">
+            <div style="font-family:var(--mono);font-size:.6rem;letter-spacing:.15em;color:var(--accent);text-transform:uppercase;margin-bottom:.6rem;">Why it matters</div>
+            <ul style="list-style:none;display:flex;flex-direction:column;gap:.5rem;">
+              <li style="font-size:.78rem;color:var(--text2);line-height:1.6;display:flex;gap:8px;"><span style="color:var(--accent);flex-shrink:0;">—</span>Australia's urban air mobility industry is growing rapidly, with eVTOL operators beginning to enter major cities</li>
+              <li style="font-size:.78rem;color:var(--text2);line-height:1.6;display:flex;gap:8px;"><span style="color:var(--accent);flex-shrink:0;">—</span>Safe, scalable domestic air transport requires intelligent infrastructure — not just aircraft, but a system that knows where every aircraft is and where it's going</li>
+              <li style="font-size:.78rem;color:var(--text2);line-height:1.6;display:flex;gap:8px;"><span style="color:var(--accent);flex-shrink:0;">—</span>CASA and Airservices Australia are already building the regulatory framework — Astral Vision provides the intelligence layer on top of it</li>
+            </ul>
+          </div>
+
+          <div style="background:rgba(0,212,255,.04);border:1px solid var(--border);border-radius:6px;padding:.9rem 1rem;">
+            <div style="font-family:var(--mono);font-size:.6rem;letter-spacing:.15em;color:var(--accent);text-transform:uppercase;margin-bottom:.5rem;">The bigger picture</div>
+            <p style="font-size:.78rem;color:var(--text2);line-height:1.7;">The eVTOL module isn't a separate idea bolted onto Astral Vision — it's proof that the core technology has applications beyond space. From debris in low Earth orbit to aircraft in low altitude airspace, Astral Vision is building a unified intelligence platform for everything that moves above us.</p>
+          </div>
+        </div>
+      </div>
     </div>
     <div class="evtol-side" style="display:flex;flex-direction:column;padding:1.25rem;gap:.75rem;overflow-y:auto;">
       <div class="section-label" style="margin-bottom:0">AIRSPACE INTEL</div>
@@ -1130,6 +1167,15 @@ function initChat(){
   setSuggestions(getGoalSuggestions());
 }
 
+
+// eVTOL about accordion
+function toggleEvtolAbout(){
+  const panel=document.getElementById('evtolAbout');
+  const chevron=document.getElementById('evtolAboutChevron');
+  const open=panel.style.display==='none';
+  panel.style.display=open?'block':'none';
+  chevron.style.transform=open?'rotate(180deg)':'rotate(0deg)';
+}
 
 // LOAD SEQUENCE
 const lms=['INITIALISING ORBITAL SENSORS...','CONNECTING TO NASA JPL FEED...','CALIBRATING LIGHT SCANNER ARRAY...','LOADING ASTRAL VISION MODULES...','ONLINE'];
