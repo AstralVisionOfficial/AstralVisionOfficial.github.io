@@ -53,6 +53,22 @@ header{display:flex;align-items:center;justify-content:space-between;padding:.75
 .stat-sub{font-family:var(--mono);font-size:.58rem;color:var(--text2);}
 .card-box{background:var(--bg2);border:1px solid var(--border);border-radius:8px;overflow:hidden;margin-bottom:1.25rem;}
 .card-box-header{padding:10px 14px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;}
+/* ACCORDION ABOUT PANELS */
+.about-accordion{margin-bottom:1.5rem;border-radius:8px;overflow:hidden;border:1px solid var(--accent);box-shadow:0 0 16px rgba(0,212,255,.12);}
+.about-accordion-header{padding:12px 16px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;user-select:none;background:rgba(0,212,255,.06);transition:background .2s;}
+.about-accordion-header:hover{background:rgba(0,212,255,.1);}
+.about-accordion-title{font-family:var(--mono);font-size:.68rem;color:var(--accent);letter-spacing:.12em;text-transform:uppercase;display:flex;align-items:center;gap:8px;}
+.about-accordion-title::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--accent);box-shadow:0 0 6px var(--accent);animation:blink 2s ease-in-out infinite;}
+.about-accordion-hint{font-family:var(--mono);font-size:.58rem;color:var(--text2);letter-spacing:.08em;}
+.about-accordion-chevron{font-size:.75rem;color:var(--accent);transition:transform .3s;flex-shrink:0;}
+.about-accordion-body{display:none;padding:1.25rem;border-top:1px solid rgba(0,212,255,.15);background:var(--bg2);}
+.about-accordion-body p{font-size:.8rem;color:var(--text2);line-height:1.75;margin-bottom:1.1rem;}
+.about-section-title{font-family:var(--mono);font-size:.6rem;letter-spacing:.15em;color:var(--accent);text-transform:uppercase;margin-bottom:.6rem;}
+.about-list{list-style:none;display:flex;flex-direction:column;gap:.5rem;margin-bottom:1.1rem;}
+.about-list li{font-size:.78rem;color:var(--text2);line-height:1.6;display:flex;gap:8px;}
+.about-list li span{color:var(--accent);flex-shrink:0;}
+.about-callout{background:rgba(0,212,255,.04);border:1px solid var(--border);border-radius:6px;padding:.9rem 1rem;}
+.about-callout p{font-size:.78rem;color:var(--text2);line-height:1.7;margin-bottom:0;}
 .card-box-title{font-family:var(--mono);font-size:.68rem;color:var(--accent);letter-spacing:.1em;}
 .live-badge{font-family:var(--mono);font-size:.55rem;padding:2px 8px;border:1px solid var(--accent2);border-radius:3px;color:var(--accent2);letter-spacing:.1em;}
 table{width:100%;border-collapse:collapse;}
@@ -323,6 +339,34 @@ tr:last-child td{border-bottom:none;}tr:hover td{background:rgba(0,212,255,.04);
   .partners-grid{grid-template-columns:repeat(2,1fr);}
   .mission-section,.roadmap-section,.partners-section{padding:2rem 1rem;}
 }
+
+/* ABOUT ACCORDIONS — shared */
+.about-accordion{background:var(--bg2);border:1px solid var(--border);border-radius:8px;overflow:hidden;margin-bottom:1.25rem;}
+.about-accordion-trigger{
+  padding:1rem 1.25rem;
+  display:flex;align-items:center;justify-content:space-between;
+  cursor:pointer;user-select:none;
+  border-bottom:1px solid transparent;
+  transition:background .15s,border-color .15s;
+  gap:12px;
+}
+.about-accordion-trigger:hover{background:rgba(0,212,255,.05);border-bottom-color:var(--border);}
+.about-accordion-left{display:flex;align-items:center;gap:10px;}
+.about-accordion-icon{width:28px;height:28px;border-radius:6px;background:rgba(0,212,255,.08);border:1px solid rgba(0,212,255,.2);display:flex;align-items:center;justify-content:center;font-size:.75rem;flex-shrink:0;}
+.about-accordion-label{font-family:var(--mono);font-size:.68rem;letter-spacing:.1em;color:var(--accent);text-transform:uppercase;}
+.about-accordion-hint{font-family:var(--mono);font-size:.55rem;color:var(--text2);letter-spacing:.08em;}
+.about-accordion-right{display:flex;align-items:center;gap:8px;flex-shrink:0;}
+.about-accordion-tag{font-family:var(--mono);font-size:.55rem;padding:3px 8px;border-radius:3px;background:rgba(0,212,255,.08);color:var(--accent);border:1px solid rgba(0,212,255,.15);letter-spacing:.08em;}
+.about-accordion-chevron{font-size:.7rem;color:var(--accent);transition:transform .3s;}
+.about-accordion-body{display:none;padding:1.4rem;border-top:1px solid var(--border);}
+.about-accordion-body p{font-size:.8rem;color:var(--text2);line-height:1.75;margin-bottom:1rem;}
+.about-section-title{font-family:var(--mono);font-size:.58rem;letter-spacing:.15em;color:var(--accent);text-transform:uppercase;margin-bottom:.55rem;}
+.about-list{list-style:none;display:flex;flex-direction:column;gap:.45rem;margin-bottom:1rem;}
+.about-list li{font-size:.78rem;color:var(--text2);line-height:1.6;display:flex;gap:8px;}
+.about-list li span{color:var(--accent);flex-shrink:0;}
+.about-callout{background:rgba(0,212,255,.04);border:1px solid var(--border);border-radius:6px;padding:.9rem 1rem;margin-top:.25rem;}
+.about-callout-title{font-family:var(--mono);font-size:.58rem;letter-spacing:.15em;color:var(--accent);text-transform:uppercase;margin-bottom:.45rem;}
+.about-callout p{font-size:.78rem;color:var(--text2);line-height:1.7;margin-bottom:0;}
 </style>
 </head>
 <body>
@@ -546,8 +590,40 @@ tr:last-child td{border-bottom:none;}tr:hover td{background:rgba(0,212,255,.04);
           <tbody id="neoTableBody"><tr><td colspan="6" style="text-align:center;color:var(--text2);padding:18px;">Loading NASA JPL data...</td></tr></tbody>
         </table>
       </div>
-    </div>
-    <div class="neo-side" style="display:flex;flex-direction:column;padding:1.25rem;gap:.75rem;overflow-y:auto;">
+
+      <div class="about-accordion" id="accordion-neo">
+        <div class="about-accordion-header" onclick="toggleAbout('neo')">
+          <div style="display:flex;align-items:center;gap:10px;">
+            <div style="width:32px;height:32px;border-radius:8px;background:rgba(0,212,255,.1);border:1px solid rgba(0,212,255,.25);display:flex;align-items:center;justify-content:center;font-size:.75rem;color:var(--accent);font-family:var(--mono);">01</div>
+            <div class="about-accordion-title">About the NEO Tracker</div>
+          </div>
+          <div style="display:flex;align-items:center;gap:10px;">
+            <div class="about-accordion-hint">CLICK TO LEARN MORE</div>
+            <div class="about-accordion-chevron" id="chevron-neo">▼</div>
+          </div>
+        </div>
+        <div class="about-accordion-body" id="about-neo">
+          <p>The NEO Tracker is Astral Vision's core orbital surveillance module — pulling live data from NASA JPL to map every near-Earth object approaching within the next 7 days, combined with a real-time orbital density simulation across LEO, MEO, and GEO shells.</p>
+          <div class="about-section-title">What it tracks</div>
+          <ul class="about-list">
+            <li><span>—</span>27,000+ debris fragments ≥10cm currently in Earth orbit</li>
+            <li><span>—</span>Near-Earth asteroids and comets — distance, velocity, size, and hazard classification</li>
+            <li><span>—</span>Potentially hazardous objects flagged in real time with risk scores</li>
+          </ul>
+          <div class="about-section-title">How it works</div>
+          <ul class="about-list">
+            <li><span>—</span>Astral Vision's light scanners measure each object's speed, angle, and albedo</li>
+            <li><span>—</span>That data feeds the AI which plots trajectories accounting for Earth's gravity</li>
+            <li><span>—</span>Conjunction alerts fire when any object comes within a 200km threshold of another</li>
+            <li><span>—</span>Operators receive advance warning with time to plan avoidance manoeuvres</li>
+          </ul>
+          <div class="about-callout">
+            <div class="about-section-title" style="margin-bottom:.4rem;">If something is heading for a collision — what then?</div>
+            <p style="margin-bottom:0">Satellites have small thrusters specifically for collision avoidance. If Astral Vision flags a threat days in advance, the operator fires those thrusters to nudge the satellite into a slightly different orbit. The ISS has done this over 30 times. Early warning is everything — the sooner you know, the smaller the manoeuvre you need.</p>
+          </div>
+        </div>
+      </div>
+        <div class="neo-side" style="display:flex;flex-direction:column;padding:1.25rem;gap:.75rem;overflow-y:auto;">
       <div class="section-label" style="margin-bottom:0">LIVE DATA FEED</div>
       <div class="info-card">
         <div class="info-card-title">Orbital Shell Status</div>
@@ -611,6 +687,7 @@ tr:last-child td{border-bottom:none;}tr:hover td{background:rgba(0,212,255,.04);
         <div class="info-card-title">About Astral Vision AI</div>
         <div class="info-card-body">Light scanners measure speed, angle, albedo. AI maps data in real-time and predicts conjunction events accounting for Earth's gravitational pull. Also tracks domestic eVTOL corridors.</div>
       </div>
+
     </div>
     <div class="chatbot">
       <div class="chat-hdr">
@@ -644,6 +721,40 @@ tr:last-child td{border-bottom:none;}tr:hover td{background:rgba(0,212,255,.04);
       </div>
       <div class="disclaimer">Educational prototype · Data: NASA JPL, ESA, ICRAR & CSIRO</div>
     </div>
+  </div>
+  <div style="padding:1rem 1.5rem 1.5rem;">
+      <div class="about-accordion" id="accordion-chat">
+        <div class="about-accordion-header" onclick="toggleAbout('chat')">
+          <div style="display:flex;align-items:center;gap:10px;">
+            <div style="width:32px;height:32px;border-radius:8px;background:rgba(0,212,255,.1);border:1px solid rgba(0,212,255,.25);display:flex;align-items:center;justify-content:center;font-size:.75rem;color:var(--accent);font-family:var(--mono);">02</div>
+            <div class="about-accordion-title">About the AI Console</div>
+          </div>
+          <div style="display:flex;align-items:center;gap:10px;">
+            <div class="about-accordion-hint">CLICK TO LEARN MORE</div>
+            <div class="about-accordion-chevron" id="chevron-chat">▼</div>
+          </div>
+        </div>
+        <div class="about-accordion-body" id="about-chat">
+          <p>The AI Console is Astral Vision's interactive intelligence layer — a space assistant that knows the live orbital environment and tailors every answer to your career goal. Ask it what asteroids are approaching this week, how space debris threatens satellites, what orbital decay means, or anything else space-related.</p>
+          <div class="about-section-title">How to use it</div>
+          <ul class="about-list">
+            <li><span>—</span>Set your career goal using the dropdown — Astronaut, Satellite Engineer, Astrophysicist, and more</li>
+            <li><span>—</span>Every answer is framed through that lens, making the data relevant to your path</li>
+            <li><span>—</span>The AI has live NASA JPL data loaded so it can answer questions about this week's approaching objects</li>
+            <li><span>—</span>Click any suggestion chip to jump to a question, or type your own</li>
+          </ul>
+          <div class="about-section-title">What it knows</div>
+          <ul class="about-list">
+            <li><span>—</span>Live asteroid and debris data from NASA JPL updated daily</li>
+            <li><span>—</span>Space situational awareness from ICRAR, CSIRO, ESA, and the Australian Space Agency</li>
+            <li><span>—</span>Astral Vision's own platform — how the light scanner works, what the data means, and where the project is headed</li>
+          </ul>
+          <div class="about-callout">
+            <div class="about-section-title" style="margin-bottom:.4rem;">Why this matters</div>
+            <p style="margin-bottom:0">Most people have no idea what's flying above them or how serious the space debris problem is. The AI Console changes that — turning complex orbital data into conversations anyone can have, tailored to what they actually care about.</p>
+          </div>
+        </div>
+      </div>
   </div>
 </div>
 
@@ -713,6 +824,39 @@ tr:last-child td{border-bottom:none;}tr:hover td{background:rgba(0,212,255,.04);
       <div class="mission-banner-title">💫 Funding the Mission</div>
       <div class="mission-banner-body">Every commercial subscription directly subsidises free educational access to Astral Vision for schools, universities, and aspiring space professionals worldwide. Business value protects satellites — and powers the next generation of space explorers.</div>
     </div>
+    <div style="height:1rem;"></div>
+    <div class="about-accordion" id="accordion-biz">
+      <div class="about-accordion-header" onclick="toggleAbout('biz')">
+        <div style="display:flex;align-items:center;gap:10px;">
+          <div style="width:32px;height:32px;border-radius:8px;background:rgba(0,212,255,.1);border:1px solid rgba(0,212,255,.25);display:flex;align-items:center;justify-content:center;font-size:.75rem;color:var(--accent);font-family:var(--mono);">03</div>
+          <div class="about-accordion-title">About Business Intelligence</div>
+        </div>
+        <div style="display:flex;align-items:center;gap:10px;">
+          <div class="about-accordion-hint">CLICK TO LEARN MORE</div>
+          <div class="about-accordion-chevron" id="chevron-biz">▼</div>
+        </div>
+      </div>
+      <div class="about-accordion-body" id="about-biz">
+        <p>Astral Vision's Business Intelligence module is the commercial arm of the platform — a subscription data service for satellite operators, space companies, and mission planners who need to know what's in their orbit before it becomes a problem. It's also the revenue engine that funds free educational access for schools and universities.</p>
+        <div class="about-section-title">The problem it solves</div>
+        <ul class="about-list">
+          <li><span>—</span>Space debris causes over $100 million in satellite damage annually worldwide</li>
+          <li><span>—</span>A single untracked fragment at orbital velocity carries the energy of a hand grenade</li>
+          <li><span>—</span>Operators currently rely on limited government data with long latency — Astral Vision provides real-time predictive alerts</li>
+        </ul>
+        <div class="about-section-title">What subscribers get</div>
+        <ul class="about-list">
+          <li><span>—</span>Predictive collision mapping — 7-day conjunction forecasts for any planned orbital path</li>
+          <li><span>—</span>Off-course detection — flags satellites drifting from planned trajectories</li>
+          <li><span>—</span>Orbital decay alerts — estimates re-entry windows weeks in advance</li>
+          <li><span>—</span>Anomaly intelligence — AI detects unusual behaviour from any NEO interaction event</li>
+        </ul>
+        <div class="about-callout">
+          <div class="about-section-title" style="margin-bottom:.4rem;">The dual mission model</div>
+          <p style="margin-bottom:0">Protecting a $50 million satellite is worth a subscription. That subscription funds a student getting free access to live orbital data. The business model isn't just commercially sound — it's what makes Astral Vision's educational mission financially sustainable without relying on grants.</p>
+        </div>
+      </div>
+    </div>
   </div>
 </div>
 
@@ -749,43 +893,40 @@ tr:last-child td{border-bottom:none;}tr:hover td{background:rgba(0,212,255,.04);
         </table>
       </div>
 
-      <!-- COLLAPSABLE ABOUT SECTION -->
-      <div class="card-box" style="margin-bottom:1.5rem;">
-        <div class="card-box-header" onclick="toggleEvtolAbout()" style="cursor:pointer;user-select:none;">
-          <div class="card-box-title">ABOUT eVTOL PATHWAYS</div>
-          <div id="evtolAboutChevron" style="font-family:var(--mono);font-size:.7rem;color:var(--accent);transition:transform .3s;">▼</div>
+
+      <div class="about-accordion" id="accordion-evtol">
+        <div class="about-accordion-header" onclick="toggleAbout('evtol')">
+          <div style="display:flex;align-items:center;gap:10px;">
+            <div style="width:32px;height:32px;border-radius:8px;background:rgba(0,212,255,.1);border:1px solid rgba(0,212,255,.25);display:flex;align-items:center;justify-content:center;font-size:.75rem;color:var(--accent);font-family:var(--mono);">04</div>
+            <div class="about-accordion-title">About eVTOL Pathways</div>
+          </div>
+          <div style="display:flex;align-items:center;gap:10px;">
+            <div class="about-accordion-hint">CLICK TO LEARN MORE</div>
+            <div class="about-accordion-chevron" id="chevron-evtol">▼</div>
+          </div>
         </div>
-        <div id="evtolAbout" style="display:none;padding:1.25rem;border-top:1px solid var(--border);">
-          <p style="font-size:.8rem;color:var(--text2);line-height:1.75;margin-bottom:1.1rem;">
-            Astral Vision's eVTOL Pathways module takes the same AI and tracking technology built for orbital space and brings it down to Earth — literally. The same system that predicts debris collisions at 500 kilometres altitude is being adapted to monitor electric vertical take-off and landing aircraft flying across Australian cities at 500 metres. One AI platform, two completely different altitude problems, the same core technology.
-          </p>
-
-          <div style="margin-bottom:1.1rem;">
-            <div style="font-family:var(--mono);font-size:.6rem;letter-spacing:.15em;color:var(--accent);text-transform:uppercase;margin-bottom:.6rem;">What it does</div>
-            <ul style="list-style:none;display:flex;flex-direction:column;gap:.5rem;">
-              <li style="font-size:.78rem;color:var(--text2);line-height:1.6;display:flex;gap:8px;"><span style="color:var(--accent);flex-shrink:0;">—</span>Tracks and monitors domestic eVTOL aircraft across Australian cities in real time</li>
-              <li style="font-size:.78rem;color:var(--text2);line-height:1.6;display:flex;gap:8px;"><span style="color:var(--accent);flex-shrink:0;">—</span>Maps approved flight corridors in 3 dimensions, giving operators a live picture of the airspace</li>
-              <li style="font-size:.78rem;color:var(--text2);line-height:1.6;display:flex;gap:8px;"><span style="color:var(--accent);flex-shrink:0;">—</span>Uses AI to flag potential conflicts between aircraft before they happen — the same conjunction logic used for satellites, scaled to city-level airspace</li>
-              <li style="font-size:.78rem;color:var(--text2);line-height:1.6;display:flex;gap:8px;"><span style="color:var(--accent);flex-shrink:0;">—</span>Monitors weather-affected zones and corridor congestion, advising operators on safe routing</li>
-            </ul>
-          </div>
-
-          <div style="margin-bottom:1.1rem;">
-            <div style="font-family:var(--mono);font-size:.6rem;letter-spacing:.15em;color:var(--accent);text-transform:uppercase;margin-bottom:.6rem;">Why it matters</div>
-            <ul style="list-style:none;display:flex;flex-direction:column;gap:.5rem;">
-              <li style="font-size:.78rem;color:var(--text2);line-height:1.6;display:flex;gap:8px;"><span style="color:var(--accent);flex-shrink:0;">—</span>Australia's urban air mobility industry is growing rapidly, with eVTOL operators beginning to enter major cities</li>
-              <li style="font-size:.78rem;color:var(--text2);line-height:1.6;display:flex;gap:8px;"><span style="color:var(--accent);flex-shrink:0;">—</span>Safe, scalable domestic air transport requires intelligent infrastructure — not just aircraft, but a system that knows where every aircraft is and where it's going</li>
-              <li style="font-size:.78rem;color:var(--text2);line-height:1.6;display:flex;gap:8px;"><span style="color:var(--accent);flex-shrink:0;">—</span>CASA and Airservices Australia are already building the regulatory framework — Astral Vision provides the intelligence layer on top of it</li>
-            </ul>
-          </div>
-
-          <div style="background:rgba(0,212,255,.04);border:1px solid var(--border);border-radius:6px;padding:.9rem 1rem;">
-            <div style="font-family:var(--mono);font-size:.6rem;letter-spacing:.15em;color:var(--accent);text-transform:uppercase;margin-bottom:.5rem;">The bigger picture</div>
-            <p style="font-size:.78rem;color:var(--text2);line-height:1.7;">The eVTOL module isn't a separate idea bolted onto Astral Vision — it's proof that the core technology has applications beyond space. From debris in low Earth orbit to aircraft in low altitude airspace, Astral Vision is building a unified intelligence platform for everything that moves above us.</p>
+        <div class="about-accordion-body" id="about-evtol">
+          <p>Astral Vision's eVTOL Pathways module takes the same AI and tracking technology built for orbital space and brings it down to Earth. The same system that predicts debris collisions at 500km altitude is adapted to monitor electric vertical take-off and landing aircraft flying across Australian cities at 500 metres. One AI platform, two completely different altitude problems, the same core technology.</p>
+          <div class="about-section-title">What it does</div>
+          <ul class="about-list">
+            <li><span>—</span>Tracks domestic eVTOL aircraft across Australian cities in real time</li>
+            <li><span>—</span>Maps approved flight corridors in 3 dimensions, giving operators a live picture of the airspace</li>
+            <li><span>—</span>Uses AI to flag potential conflicts between aircraft before they happen — the same conjunction logic used for satellites, scaled to city-level airspace</li>
+            <li><span>—</span>Monitors weather-affected zones and corridor congestion, advising operators on safe routing</li>
+          </ul>
+          <div class="about-section-title">Why it matters</div>
+          <ul class="about-list">
+            <li><span>—</span>Australia's urban air mobility industry is growing — eVTOL operators are entering major cities</li>
+            <li><span>—</span>Safe domestic air transport needs intelligent infrastructure, not just aircraft</li>
+            <li><span>—</span>CASA and Airservices Australia are building the regulatory framework — Astral Vision provides the intelligence layer on top</li>
+          </ul>
+          <div class="about-callout">
+            <div class="about-section-title" style="margin-bottom:.4rem;">The connection to space</div>
+            <p style="margin-bottom:0">The eVTOL module isn't a separate idea — it's proof that Astral Vision's core technology has applications beyond space. From debris in low Earth orbit to aircraft in low altitude airspace, the platform is building unified intelligence for everything that moves above us.</p>
           </div>
         </div>
       </div>
-    </div>
+        </div>
     <div class="evtol-side" style="display:flex;flex-direction:column;padding:1.25rem;gap:.75rem;overflow-y:auto;">
       <div class="section-label" style="margin-bottom:0">AIRSPACE INTEL</div>
       <div class="info-card">
@@ -1168,11 +1309,12 @@ function initChat(){
 }
 
 
-// eVTOL about accordion
-function toggleEvtolAbout(){
-  const panel=document.getElementById('evtolAbout');
-  const chevron=document.getElementById('evtolAboutChevron');
-  const open=panel.style.display==='none';
+// Unified accordion toggle
+function toggleAbout(id){
+  const panel=document.getElementById('about-'+id);
+  const chevron=document.getElementById('chevron-'+id);
+  if(!panel)return;
+  const open=panel.style.display==='none'||panel.style.display==='';
   panel.style.display=open?'block':'none';
   chevron.style.transform=open?'rotate(180deg)':'rotate(0deg)';
 }
