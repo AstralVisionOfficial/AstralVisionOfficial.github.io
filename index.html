@@ -241,7 +241,7 @@ tr:last-child td{border-bottom:none;}tr:hover td{background:rgba(0,212,255,.04);
   #neoPage .inner{grid-template-columns:1fr;height:auto;}
   .neo-left{padding:1rem;overflow-y:visible;}
   #orbitCanvas{height:220px;}
-  .stat-row{grid-template-columns:repeat(2,1fr);gap:7px;}
+  .stat-row{grid-template-columns:repeat(3,1fr)!important;gap:7px;}
   .stat-value{font-size:1.2rem;}
   table th,table td{padding:6px 8px;font-size:.58rem;}
   .card-box-header{flex-direction:column;align-items:flex-start;gap:6px;}
@@ -561,10 +561,10 @@ tr:last-child td{border-bottom:none;}tr:hover td{background:rgba(0,212,255,.04);
   <div class="inner">
     <div class="neo-left">
       <div class="stat-row">
-        <div class="stat-card"><div class="stat-label">Objects Tracked</div><div class="stat-value" id="statTracked">—</div><div class="stat-sub">catalogued objects</div></div>
+        <div class="stat-card"><div class="stat-label">Objects Tracked</div><div class="stat-value" id="statTracked">—</div><div class="stat-sub">live from NASA JPL</div></div>
         <div class="stat-card o"><div class="stat-label">Close Approaches</div><div class="stat-value o" id="statApproach">—</div><div class="stat-sub">next 7 days</div></div>
-        <div class="stat-card"><div class="stat-label">Debris Fragments</div><div class="stat-value">27,000+</div><div class="stat-sub">≥10cm tracked</div></div>
-        <div class="stat-card g"><div class="stat-label">Hazardous NEOs</div><div class="stat-value g" id="statHazard">—</div><div class="stat-sub">potentially hazardous</div></div>
+        <div class="stat-card o"><div class="stat-label">Impact Speed</div><div class="stat-value o">10 km/s</div><div class="stat-sub">avg — 10× faster than a bullet</div></div>
+        <div class="stat-card g"><div class="stat-label">Hazardous NEOs</div><div class="stat-value g" id="statHazard">—</div><div class="stat-sub">potentially hazardous asteroids</div></div>
       </div>
       <div class="section-label">ORBITAL DENSITY MAP — REAL-TIME SIMULATION</div>
       <div class="card-box">
@@ -578,6 +578,7 @@ tr:last-child td{border-bottom:none;}tr:hover td{background:rgba(0,212,255,.04);
           </div>
         </div>
         <canvas id="orbitCanvas"></canvas>
+
       </div>
       <div class="section-label">CLOSE-APPROACH ALERTS — NASA JPL</div>
       <div class="card-box">
@@ -606,7 +607,7 @@ tr:last-child td{border-bottom:none;}tr:hover td{background:rgba(0,212,255,.04);
           <p>The NEO Tracker is Astral Vision's core orbital surveillance module — pulling live data from NASA JPL to map every near-Earth object approaching within the next 7 days, combined with a real-time orbital density simulation across LEO, MEO, and GEO shells.</p>
           <div class="about-section-title">What it tracks</div>
           <ul class="about-list">
-            <li><span>—</span>27,000+ debris fragments ≥10cm currently in Earth orbit</li>
+            <li><span>—</span>36,000+ debris fragments ≥10cm currently in Earth orbit</li>
             <li><span>—</span>Near-Earth asteroids and comets — distance, velocity, size, and hazard classification</li>
             <li><span>—</span>Potentially hazardous objects flagged in real time with risk scores</li>
           </ul>
@@ -680,7 +681,7 @@ tr:last-child td{border-bottom:none;}tr:hover td{background:rgba(0,212,255,.04);
       </div>
       <div class="info-card">
         <div class="info-card-title">Key Facts</div>
-        <div class="info-stat"><span class="info-stat-label">Tracked debris ≥10cm</span><span class="info-stat-val">27,000+</span></div>
+        <div class="info-stat"><span class="info-stat-label">Tracked debris ≥10cm</span><span class="info-stat-val">36,000+</span></div>
         <div class="info-stat"><span class="info-stat-label">Annual damage cost</span><span class="info-stat-val" style="color:var(--accent3)">$100M+</span></div>
         <div class="info-stat"><span class="info-stat-label">Shells covered</span><span class="info-stat-val">LEO/MEO/GEO</span></div>
       </div>
@@ -768,10 +769,10 @@ tr:last-child td{border-bottom:none;}tr:hover td{background:rgba(0,212,255,.04);
   </div>
   <div class="panel-wrap">
     <div class="stat-row" style="margin-top:1.5rem;">
-      <div class="stat-card o"><div class="stat-label">Annual Losses</div><div class="stat-value o">$100M+</div><div class="stat-sub">from debris globally</div></div>
-      <div class="stat-card"><div class="stat-label">Tracked Debris</div><div class="stat-value">27,000+</div><div class="stat-sub">≥10cm in orbit</div></div>
-      <div class="stat-card g"><div class="stat-label">Alert Latency</div><div class="stat-value g">&lt;60s</div><div class="stat-sub">collision warnings</div></div>
-      <div class="stat-card"><div class="stat-label">Detection Accuracy</div><div class="stat-value">99.97%</div><div class="stat-sub">validated vs JSpOC</div></div>
+      <div class="stat-card o"><div class="stat-label">Annual Losses</div><div class="stat-value o">$100M+</div><div class="stat-sub">in satellite damage globally</div></div>
+      <div class="stat-card"><div class="stat-label">Tracked ≥10cm</div><div class="stat-value">36,000+</div><div class="stat-sub">catalogued & monitored</div></div>
+      <div class="stat-card o"><div class="stat-label">Untracked 1–10cm</div><div class="stat-value o">500,000+</div><div class="stat-sub">estimated — too small to track</div></div>
+      <div class="stat-card g"><div class="stat-label">Detection Accuracy</div><div class="stat-value g">99.97%</div><div class="stat-sub">validated vs JSpOC</div></div>
     </div>
     <div class="section-label">CORE CAPABILITIES</div>
     <div class="biz-grid">
@@ -982,44 +983,10 @@ function showPage(id,btn){
   pg.style.display = (id==='hub') ? 'flex' : 'block';
   pg.classList.add('active');
   if(btn)btn.classList.add('active');
-  if(id==='neo'&&!window.orbitInited){window.orbitInited=true;initOrbitMap();}
+  if(id==='neo'&&!window.orbitInited){window.orbitInited=true;}
+  else if(id==='neo'&&window._orbitRedraw){window._orbitRedraw();}
   if(id==='evtol'&&!window.evtolInited){window.evtolInited=true;initEvtolMap();}
   if(id==='chat'&&!window.chatInited){window.chatInited=true;initChat();}
-}
-
-// ORBIT MAP
-const orbitCanvas=document.getElementById('orbitCanvas'),octx=orbitCanvas.getContext('2d');
-let orbitObjs=[],orbitAnim;
-function initOrbitMap(){
-  orbitCanvas.width=orbitCanvas.offsetWidth;orbitCanvas.height=280;orbitObjs=[];
-  const cx=orbitCanvas.width/2,cy=orbitCanvas.height/2,maxR=Math.min(cx,cy)-18;
-  orbitObjs.push({type:'earth',cx,cy,r:20});
-  [.28,.48,.70,.90].forEach((ratio,i)=>{
-    const oR=maxR*ratio,count=[14,22,8,5][i],types=['debris','satellite','satellite','neo'][i];
-    for(let j=0;j<count;j++){
-      const angle=(j/count)*Math.PI*2+Math.random()*.3,speed=(.0007+Math.random()*.0005)*(i%2===0?1:-1);
-      orbitObjs.push({type:Math.random()<.07?'highrisk':types,angle,speed,orbitR:oR,cx,cy,size:types==='debris'?1.5:types==='neo'?3:2.5,trail:[]});
-    }
-  });
-  cancelAnimationFrame(orbitAnim);drawOrbit();
-}
-function drawOrbit(){
-  const w=orbitCanvas.width,h=orbitCanvas.height;octx.clearRect(0,0,w,h);
-  [.28,.48,.70,.90].forEach(r=>{const cx=w/2,cy=h/2,or=Math.min(cx,cy-18)*r;octx.beginPath();octx.arc(cx,cy,or,0,Math.PI*2);octx.strokeStyle='rgba(0,212,255,0.07)';octx.lineWidth=.5;octx.setLineDash([4,8]);octx.stroke();octx.setLineDash([]);});
-  orbitObjs.forEach(obj=>{
-    if(obj.type==='earth'){
-      const g=octx.createRadialGradient(obj.cx,obj.cy,0,obj.cx,obj.cy,38);g.addColorStop(0,'rgba(0,80,220,0.18)');g.addColorStop(1,'transparent');
-      octx.fillStyle=g;octx.beginPath();octx.arc(obj.cx,obj.cy,38,0,Math.PI*2);octx.fill();
-      octx.beginPath();octx.arc(obj.cx,obj.cy,obj.r,0,Math.PI*2);octx.fillStyle='#0a3d8f';octx.fill();octx.strokeStyle='#1a6fd4';octx.lineWidth=1.5;octx.stroke();return;
-    }
-    obj.angle+=obj.speed;
-    const x=obj.cx+Math.cos(obj.angle)*obj.orbitR,y=obj.cy+Math.sin(obj.angle)*obj.orbitR;
-    obj.trail.push({x,y});if(obj.trail.length>14)obj.trail.shift();
-    if(obj.trail.length>1){for(let i=1;i<obj.trail.length;i++){const a=(i/obj.trail.length)*.3;octx.beginPath();octx.moveTo(obj.trail[i-1].x,obj.trail[i-1].y);octx.lineTo(obj.trail[i].x,obj.trail[i].y);octx.strokeStyle=obj.type==='debris'?`rgba(255,107,53,${a})`:obj.type==='neo'?`rgba(0,255,157,${a})`:obj.type==='highrisk'?`rgba(255,215,0,${a})`:`rgba(0,212,255,${a})`;octx.lineWidth=.8;octx.stroke();}}
-    octx.beginPath();octx.arc(x,y,obj.size,0,Math.PI*2);octx.fillStyle=obj.type==='debris'?'#ff6b35':obj.type==='neo'?'#00ff9d':obj.type==='highrisk'?'#ffd700':'#00d4ff';octx.fill();
-    if(obj.type==='highrisk'){octx.beginPath();octx.arc(x,y,obj.size+3,0,Math.PI*2);octx.strokeStyle='rgba(255,215,0,0.4)';octx.lineWidth=.8;octx.stroke();}
-  });
-  orbitAnim=requestAnimationFrame(drawOrbit);
 }
 
 // eVTOL MAP
@@ -1160,14 +1127,14 @@ const KB=[
     keys:['dangerous','hazardous','threat','risk','collision','hit earth','impact'],
     answer:function(){
       const haz=window.neoData?window.neoData.filter(x=>x.is_potentially_hazardous_asteroid).length:0;
-      return 'A Near-Earth Object is classified as <strong style="color:#ff6b35">Potentially Hazardous</strong> when it is larger than about 140 metres and passes within 0.05 astronomical units of Earth — roughly 7.5 million kilometres.<br><br>'+(haz>0?'Right now, '+haz+' of this week\'s approaching objects meet that classification. ':'')+'Being classified as potentially hazardous doesn\'t mean an imminent impact — it means the object\'s orbit brings it close enough that small gravitational nudges over decades could theoretically alter its path.<br><br>For space debris, the risk is more immediate — with over 27,000 tracked fragments flying at speeds of up to 28,000 km/h, even a 1cm piece carries the energy of a hand grenade. Astral Vision\'s conjunction alerts flag when any object comes within a 200km threshold of another, giving operators time to plan avoidance manoeuvres.';
+      return 'A Near-Earth Object is classified as <strong style="color:#ff6b35">Potentially Hazardous</strong> when it is larger than about 140 metres and passes within 0.05 astronomical units of Earth — roughly 7.5 million kilometres.<br><br>'+(haz>0?'Right now, '+haz+' of this week\'s approaching objects meet that classification. ':'')+'Being classified as potentially hazardous doesn\'t mean an imminent impact — it means the object\'s orbit brings it close enough that small gravitational nudges over decades could theoretically alter its path.<br><br>For space debris, the risk is more immediate — with over 36,000 tracked fragments flying at speeds of up to 28,000 km/h, even a 1cm piece carries the energy of a hand grenade. Astral Vision\'s conjunction alerts flag when any object comes within a 200km threshold of another, giving operators time to plan avoidance manoeuvres.';
     },
     suggestions:['How does Astral Vision predict collisions?','What is space debris exactly?','How does a conjunction alert work?']
   },
   {
     keys:['space debris','junk','fragments','debris'],
     answer:function(){
-      return 'Space debris refers to any non-functional human-made objects orbiting Earth — dead satellites, spent rocket stages, fragments from collisions and explosions, even paint flecks and screws.<br><br>There are currently <strong style="color:var(--accent)">over 27,000 tracked fragments</strong> larger than 10cm in orbit, and an estimated 500,000 pieces between 1–10cm that are too small to track but still lethal to spacecraft. The total mass of debris in orbit exceeds 9,000 tonnes.<br><br>This costs the satellite industry <strong style="color:#ff6b35">over $100 million every year</strong> in damage, avoidance manoeuvres, and insurance. Astral Vision directly addresses this by providing predictive collision mapping so operators know what\'s coming before it arrives — a capability Australia urgently needs according to Space Connect\'s 2024 report on national space debris infrastructure.';
+      return 'Space debris refers to any non-functional human-made objects orbiting Earth — dead satellites, spent rocket stages, fragments from collisions and explosions, even paint flecks and screws.<br><br>There are currently <strong style="color:var(--accent)">over 36,000 tracked fragments</strong> larger than 10cm in orbit, and an estimated 1 million+ pieces between 1–10cm that are too small to track but still lethal to spacecraft. The total mass of debris in orbit exceeds 9,500 tonnes.<br><br>This costs the satellite industry <strong style="color:#ff6b35">over $100 million every year</strong> in damage, avoidance manoeuvres, and insurance. Astral Vision directly addresses this by providing predictive collision mapping so operators know what\'s coming before it arrives — a capability Australia urgently needs according to Space Connect\'s 2024 report on national space debris infrastructure.';
     },
     suggestions:['What is the Kessler cascade?','How does debris affect satellites?','How does Astral Vision track debris?']
   },
@@ -1318,6 +1285,213 @@ function toggleAbout(id){
   panel.style.display=open?'block':'none';
   chevron.style.transform=open?'rotate(180deg)':'rotate(0deg)';
 }
+
+        // ── 3D EARTH + DEBRIS CLOUD (ESA-style) ──
+        (function(){
+          const canvas = document.getElementById('orbitCanvas');
+          const ctx = canvas.getContext('2d');
+          let W,H,cx,cy,earthR,animId,angle=0,tilt=0.38;
+          let debris=[],satellites=[],neos=[];
+
+          function rand(a,b){return a+Math.random()*(b-a);}
+          function randSign(){return Math.random()<0.5?1:-1;}
+
+          function resize(){
+            W=canvas.width=canvas.offsetWidth;
+            H=canvas.height=320;
+            cx=W/2; cy=H/2;
+            earthR=Math.min(W,H)*0.19;
+            init();
+          }
+
+          function init(){
+            debris=[]; satellites=[]; neos=[];
+
+            // ── DEBRIS — 600 particles, multiple shells ──
+            for(let i=0;i<600;i++){
+              // LEO is densest (750-1000km = most dangerous per NASA FAQ)
+              const shellRoll=Math.random();
+              let minR,maxR,danger;
+              if(shellRoll<0.55){minR=1.15;maxR=1.5;danger=Math.random()<0.15;}       // LEO dense
+              else if(shellRoll<0.78){minR=1.5;maxR=1.9;danger=Math.random()<0.06;}   // LEO outer
+              else if(shellRoll<0.92){minR=2.0;maxR=2.8;danger=false;}                // MEO
+              else{minR=3.0;maxR=3.8;danger=false;}                                   // GEO
+
+              const orbitR=rand(minR,maxR)*earthR;
+              const inc=rand(0,Math.PI);         // random inclination
+              const theta=rand(0,Math.PI*2);
+              const speed=rand(0.0003,0.0014)*randSign();
+              const size=rand(0.8,danger?3.2:2.0);
+
+              debris.push({orbitR,inc,theta,speed,size,
+                color:danger?'#ff4444':shellRoll<0.55?'#6a9ab0':'#3a6070',
+                alpha:rand(0.5,danger?1.0:0.85)
+              });
+            }
+
+            // ── ACTIVE SATELLITES — 24 bright cyan ──
+            for(let i=0;i<24;i++){
+              const orbitR=rand(1.2,1.85)*earthR;
+              satellites.push({
+                orbitR, inc:rand(0,Math.PI),
+                theta:rand(0,Math.PI*2),
+                speed:rand(0.0007,0.0013)*randSign(),
+                size:2.5
+              });
+            }
+
+            // ── NEOS — 8 green, outer orbits ──
+            for(let i=0;i<8;i++){
+              neos.push({
+                orbitR:rand(3.2,4.2)*earthR,
+                inc:rand(0.1,Math.PI*0.85),
+                theta:rand(0,Math.PI*2),
+                speed:rand(0.0002,0.0006)*randSign(),
+                size:rand(2.5,4)
+              });
+            }
+          }
+
+          // Project 3D point to 2D with perspective
+          function proj(x,y,z){
+            const d=4.5; // perspective depth
+            const s=d/(d+(z/earthR));
+            return {px:cx+x*s, py:cy+y*s, pz:z, s:Math.max(0.01,s)};
+          }
+
+          // Get 3D position of an orbiting object
+          function orbitPos(obj){
+            const r=obj.orbitR;
+            const t=obj.theta;
+            const inc=obj.inc;
+            // Orbit in XZ plane then tilt by inclination
+            const ox=r*Math.cos(t);
+            const oz=r*Math.sin(t);
+            const oy=oz*Math.sin(inc);
+            const oz2=oz*Math.cos(inc);
+            // Rotate whole system around Y (globe spin) and apply tilt
+            const rotY=angle;
+            const rx=ox*Math.cos(rotY)+oz2*Math.sin(rotY);
+            const rz=-ox*Math.sin(rotY)+oz2*Math.cos(rotY);
+            const ry=oy;
+            // Apply camera tilt
+            const fy=ry*Math.cos(tilt)-rz*Math.sin(tilt);
+            const fz=ry*Math.sin(tilt)+rz*Math.cos(tilt);
+            return proj(rx,fy,fz);
+          }
+
+          function drawEarth(){
+            if(earthR<=0)return;
+
+            // Deep space glow behind earth
+            const bgGlow=ctx.createRadialGradient(cx,cy,0,cx,cy,earthR*2.5);
+            bgGlow.addColorStop(0,'rgba(0,60,120,0.12)');
+            bgGlow.addColorStop(1,'transparent');
+            ctx.beginPath();ctx.arc(cx,cy,earthR*2.5,0,Math.PI*2);
+            ctx.fillStyle=bgGlow;ctx.fill();
+
+            // Atmosphere halo — ESA style blue ring
+            const atm=ctx.createRadialGradient(cx,cy,earthR*0.95,cx,cy,earthR*1.3);
+            atm.addColorStop(0,'rgba(40,140,255,0.22)');
+            atm.addColorStop(0.5,'rgba(20,80,200,0.08)');
+            atm.addColorStop(1,'transparent');
+            ctx.beginPath();ctx.arc(cx,cy,earthR*1.3,0,Math.PI*2);
+            ctx.fillStyle=atm;ctx.fill();
+
+            // Earth body
+            const eGrad=ctx.createRadialGradient(cx-earthR*0.28,cy-earthR*0.22,earthR*0.08,cx,cy,earthR);
+            eGrad.addColorStop(0,'#1e6bb8');
+            eGrad.addColorStop(0.35,'#0e4480');
+            eGrad.addColorStop(0.75,'#071f48');
+            eGrad.addColorStop(1,'#020810');
+            ctx.beginPath();ctx.arc(cx,cy,earthR,0,Math.PI*2);
+            ctx.fillStyle=eGrad;ctx.fill();
+
+            // Land masses
+            const la=angle*0.15;
+            const lands=[[-0.28,0.05,0.22,0.14],[-0.05,-0.18,0.16,0.10],
+                         [0.12,0.02,0.26,0.17],[0.40,-0.08,0.17,0.11],[0.26,0.18,0.11,0.08]];
+            ctx.save();
+            ctx.beginPath();ctx.arc(cx,cy,earthR,0,Math.PI*2);ctx.clip();
+            lands.forEach(([dx,dy,rw,rh])=>{
+              const lx=cx+(dx*Math.cos(la)-dy*Math.sin(la))*earthR;
+              const ly=cy+(dx*Math.sin(la)+dy*Math.cos(la))*earthR;
+              const erx=Math.max(1,Math.abs(rw*earthR));
+              const ery=Math.max(1,Math.abs(rh*earthR));
+              ctx.beginPath();ctx.ellipse(lx,ly,erx,ery,la*0.5,0,Math.PI*2);
+              ctx.fillStyle='rgba(18,78,46,0.5)';ctx.fill();
+            });
+            ctx.restore();
+
+            // Night side shadow
+            const shadow=ctx.createRadialGradient(cx+earthR*0.45,cy+earthR*0.1,0,cx,cy,earthR*1.1);
+            shadow.addColorStop(0,'transparent');
+            shadow.addColorStop(0.55,'transparent');
+            shadow.addColorStop(1,'rgba(2,8,16,0.72)');
+            ctx.beginPath();ctx.arc(cx,cy,earthR,0,Math.PI*2);
+            ctx.fillStyle=shadow;ctx.fill();
+
+            // Edge glow
+            ctx.beginPath();ctx.arc(cx,cy,earthR,0,Math.PI*2);
+            ctx.strokeStyle='rgba(60,160,255,0.3)';ctx.lineWidth=1.5;ctx.stroke();
+          }
+
+          function draw(){
+            ctx.clearRect(0,0,W,H);
+
+            // Tick orbits
+            debris.forEach(o=>o.theta+=o.speed);
+            satellites.forEach(o=>o.theta+=o.speed);
+            neos.forEach(o=>o.theta+=o.speed);
+            angle+=0.003;
+
+            // Project all objects
+            const all=[];
+            debris.forEach(o=>{const p=orbitPos(o);all.push({o,p,type:'d'});});
+            satellites.forEach(o=>{const p=orbitPos(o);all.push({o,p,type:'s'});});
+            neos.forEach(o=>{const p=orbitPos(o);all.push({o,p,type:'n'});});
+            all.sort((a,b)=>a.p.pz-b.p.pz);
+
+            // Draw back layer (behind Earth)
+            all.forEach(({o,p,type})=>{if(p.pz<-earthR*0.1)drawDot(o,p,type,true);});
+
+            drawEarth();
+
+            // Draw front layer (in front of Earth)
+            all.forEach(({o,p,type})=>{if(p.pz>=-earthR*0.1)drawDot(o,p,type,false);});
+
+            animId=requestAnimationFrame(draw);
+          }
+
+          function drawDot(o,p,type,behind){
+            if(!p||!isFinite(p.px)||!isFinite(p.py))return;
+            const size=Math.max(0.3,Math.abs(o.size*(behind?0.5:Math.min(1.6,p.s))));
+            const a=behind?0.18:(o.alpha||0.9);
+
+            if(type==='d'){
+              ctx.beginPath();ctx.arc(p.px,p.py,size,0,Math.PI*2);
+              ctx.fillStyle=behind?'rgba(60,90,110,0.2)':
+                o.color==='#ff4444'?`rgba(255,68,68,${a})`:`rgba(100,160,180,${a})`;
+              ctx.fill();
+            } else if(type==='s'){
+              if(behind)return;
+              ctx.beginPath();ctx.arc(p.px,p.py,size,0,Math.PI*2);
+              ctx.fillStyle=`rgba(0,212,255,${a})`;ctx.fill();
+              ctx.beginPath();ctx.arc(p.px,p.py,size+2,0,Math.PI*2);
+              ctx.strokeStyle=`rgba(0,212,255,0.25)`;ctx.lineWidth=0.8;ctx.stroke();
+            } else {
+              if(behind)return;
+              ctx.beginPath();ctx.arc(p.px,p.py,size,0,Math.PI*2);
+              ctx.fillStyle=`rgba(0,255,157,${a})`;ctx.fill();
+              ctx.beginPath();ctx.arc(p.px,p.py,size+3,0,Math.PI*2);
+              ctx.strokeStyle=`rgba(0,255,157,0.2)`;ctx.lineWidth=0.8;ctx.stroke();
+            }
+          }
+
+          window.addEventListener('resize',()=>{cancelAnimationFrame(animId);resize();draw();});
+          window._orbitRedraw=()=>{cancelAnimationFrame(animId);resize();draw();};
+          resize();draw();
+        })();
 
 // LOAD SEQUENCE
 const lms=['INITIALISING ORBITAL SENSORS...','CONNECTING TO NASA JPL FEED...','CALIBRATING LIGHT SCANNER ARRAY...','LOADING ASTRAL VISION MODULES...','ONLINE'];
